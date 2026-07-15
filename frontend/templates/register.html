@@ -1,0 +1,410 @@
+{% extends "base.html" %}
+
+{% block title %}Register - E-Waste Management System{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="container-fluid h-100">
+        <div class="row h-100">
+            <!-- Left Side - Branding -->
+            <div class="col-lg-6 d-none d-lg-flex bg-success text-white p-0">
+                <div class="d-flex flex-column justify-content-center align-items-center w-100 p-5">
+                    <div class="text-center">
+                        <i class="fas fa-recycle display-1 mb-4"></i>
+                        <h1 class="display-4 fw-bold mb-4">Join E-Waste Manager</h1>
+                        <p class="lead mb-4">Create your account and start managing e-waste responsibly</p>
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <i class="fas fa-laptop fa-2x mb-2"></i>
+                                <p class="small">Track Devices</p>
+                            </div>
+                            <div class="col-4">
+                                <i class="fas fa-truck fa-2x mb-2"></i>
+                                <p class="small">Schedule Pickup</p>
+                            </div>
+                            <div class="col-4">
+                                <i class="fas fa-leaf fa-2x mb-2"></i>
+                                <p class="small">Go Green</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Side - Registration Form -->
+            <div class="col-lg-6 d-flex align-items-center justify-content-center">
+                <div class="register-form-container w-100" style="max-width: 400px;">
+                    <div class="text-center mb-4 d-lg-none">
+                        <i class="fas fa-recycle text-success" style="font-size: 3rem;"></i>
+                        <h2 class="text-success">E-Waste Manager</h2>
+                    </div>
+                    
+                    <div class="card shadow-lg border-0">
+                        <div class="card-body p-5">
+                            <h3 class="card-title text-center mb-4">Create Account</h3>
+                            
+                            <!-- Alert Messages -->
+                            <div id="alertContainer"></div>
+                            
+                            <!-- Step 1: Registration Form -->
+                            <form id="registerForm">
+                                <div class="mb-3">
+                                    <label for="firstName" class="form-label">
+                                        <i class="fas fa-user me-2"></i>First Name
+                                    </label>
+                                    <input type="text" class="form-control form-control-lg" id="firstName" name="first_name" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="lastName" class="form-label">
+                                        <i class="fas fa-user me-2"></i>Last Name
+                                    </label>
+                                    <input type="text" class="form-control form-control-lg" id="lastName" name="last_name" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">
+                                        <i class="fas fa-envelope me-2"></i>Email Address
+                                    </label>
+                                    <input type="email" class="form-control form-control-lg" id="email" name="email" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">
+                                        <i class="fas fa-user-tag me-2"></i>Username
+                                    </label>
+                                    <input type="text" class="form-control form-control-lg" id="username" name="username" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">
+                                        <i class="fas fa-lock me-2"></i>Password
+                                    </label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control form-control-lg" id="password" name="password" required minlength="6">
+                                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                    <small class="text-muted">Password must be at least 6 characters</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="confirmPassword" class="form-label">
+                                        <i class="fas fa-lock me-2"></i>Confirm Password
+                                    </label>
+                                    <input type="password" class="form-control form-control-lg" id="confirmPassword" name="confirm_password" required>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-success btn-lg" id="registerBtn">
+                                        <i class="fas fa-user-plus me-2"></i>
+                                        <span id="registerBtnText">Create Account</span>
+                                        <div class="spinner-border spinner-border-sm ms-2 d-none" id="registerSpinner"></div>
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <!-- Step 2: OTP Verification (Hidden Initially) -->
+                            <form id="otpForm" class="d-none">
+                                <div class="text-center mb-4">
+                                    <i class="fas fa-envelope-open-text text-success fa-3x mb-3"></i>
+                                    <h5>Verify Your Email</h5>
+                                    <p class="text-muted">We've sent a 6-digit verification code to <strong id="otpEmail"></strong></p>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="otpCode" class="form-label">Enter Verification Code</label>
+                                    <input type="text" class="form-control form-control-lg text-center" id="otpCode" name="otp_code" 
+                                           pattern="[0-9]{6}" maxlength="6" placeholder="000000" required>
+                                </div>
+                                
+                                <div class="d-grid mb-3">
+                                    <button type="submit" class="btn btn-success btn-lg" id="verifyBtn">
+                                        <i class="fas fa-check me-2"></i>
+                                        <span id="verifyBtnText">Verify Email</span>
+                                        <div class="spinner-border spinner-border-sm ms-2 d-none" id="verifySpinner"></div>
+                                    </button>
+                                </div>
+                                
+                                <div class="text-center">
+                                    <button type="button" class="btn btn-link btn-sm" id="resendOtpBtn">
+                                        <i class="fas fa-redo me-1"></i>Resend Code
+                                    </button>
+                                    <button type="button" class="btn btn-link btn-sm" id="backToRegister">
+                                        <i class="fas fa-arrow-left me-1"></i>Back to Registration
+                                    </button>
+                                </div>
+                            </form>
+                            
+                            <hr class="my-4">
+                            
+                            <div class="text-center">
+                                <p class="mb-0">Already have an account? <a href="/login" class="text-success">Sign In</a></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <small class="text-muted">
+                            By creating an account, you agree to our Terms of Service and Privacy Policy
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.register-container {
+    min-height: 100vh;
+}
+
+.register-form-container {
+    padding: 2rem;
+}
+
+.card {
+    border-radius: 15px;
+}
+
+.form-control:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+.btn-success {
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.btn-success:hover {
+    background-color: #157347;
+    border-color: #146c43;
+}
+
+.bg-success {
+    background: linear-gradient(135deg, #198754 0%, #20c997 100%) !important;
+}
+
+@media (max-width: 991.98px) {
+    .register-container {
+        background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+    }
+    
+    .register-form-container {
+        padding: 1rem;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const registerForm = document.getElementById('registerForm');
+    const otpForm = document.getElementById('otpForm');
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirmPassword');
+    const registerBtn = document.getElementById('registerBtn');
+    const registerBtnText = document.getElementById('registerBtnText');
+    const registerSpinner = document.getElementById('registerSpinner');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const verifyBtnText = document.getElementById('verifyBtnText');
+    const verifySpinner = document.getElementById('verifySpinner');
+    const resendOtpBtn = document.getElementById('resendOtpBtn');
+    const backToRegister = document.getElementById('backToRegister');
+    
+    let registrationData = {};
+    
+    // Toggle password visibility
+    togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        confirmPasswordInput.setAttribute('type', type);
+        
+        const icon = this.querySelector('i');
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    });
+    
+    // Handle registration form submission
+    registerForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Validate passwords match
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            showAlert('Passwords do not match', 'danger');
+            return;
+        }
+        
+        // Validate password length
+        if (passwordInput.value.length < 6) {
+            showAlert('Password must be at least 6 characters long', 'danger');
+            return;
+        }
+        
+        const formData = new FormData(registerForm);
+        registrationData = {
+            first_name: formData.get('first_name'),
+            last_name: formData.get('last_name'),
+            email: formData.get('email').toLowerCase().trim(),
+            username: formData.get('username'),
+            password: formData.get('password')
+        };
+        
+        // Show loading state
+        registerBtn.disabled = true;
+        registerBtnText.textContent = 'Sending Verification Code...';
+        registerSpinner.classList.remove('d-none');
+        
+        try {
+            // Send OTP
+            const response = await fetch('/api/auth/send-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: registrationData.email })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Show OTP form
+                document.getElementById('otpEmail').textContent = registrationData.email;
+                registerForm.classList.add('d-none');
+                otpForm.classList.remove('d-none');
+                
+                // Check if OTP is in response (for development when email is not configured)
+                if (data.otp_code) {
+                    showAlert('Verification code sent! OTP: ' + data.otp_code, 'success');
+                    console.log('OTP Code:', data.otp_code);
+                } else {
+                    showAlert('Verification code sent to your email!', 'success');
+                }
+            } else {
+                showAlert(data.error || 'Failed to send verification code', 'danger');
+            }
+        } catch (error) {
+            showAlert('Network error. Please try again.', 'danger');
+        } finally {
+            registerBtn.disabled = false;
+            registerBtnText.textContent = 'Create Account';
+            registerSpinner.classList.add('d-none');
+        }
+    });
+    
+    // Handle OTP verification
+    otpForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const otpCode = document.getElementById('otpCode').value;
+        
+        if (otpCode.length !== 6 || !/^\d{6}$/.test(otpCode)) {
+            showAlert('Please enter a valid 6-digit code', 'danger');
+            return;
+        }
+        
+        // Show loading state
+        verifyBtn.disabled = true;
+        verifyBtnText.textContent = 'Verifying...';
+        verifySpinner.classList.remove('d-none');
+        
+        try {
+            // First verify OTP
+            const verifyResponse = await fetch('/api/auth/verify-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: registrationData.email,
+                    otp_code: otpCode,
+                    user_data: registrationData
+                })
+            });
+            
+            const verifyData = await verifyResponse.json();
+            
+            if (verifyResponse.ok) {
+                showAlert('Account created successfully! Redirecting to login...', 'success');
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000);
+            } else {
+                showAlert(verifyData.error || 'Verification failed', 'danger');
+            }
+        } catch (error) {
+            showAlert('Network error. Please try again.', 'danger');
+        } finally {
+            verifyBtn.disabled = false;
+            verifyBtnText.textContent = 'Verify Email';
+            verifySpinner.classList.add('d-none');
+        }
+    });
+    
+    // Handle resend OTP
+    resendOtpBtn.addEventListener('click', async function() {
+        resendOtpBtn.disabled = true;
+        resendOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Sending...';
+        
+        try {
+            const response = await fetch('/api/auth/resend-otp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: registrationData.email })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Check if OTP is in response (for development when email is not configured)
+                if (data.otp_code) {
+                    showAlert('Verification code resent! OTP: ' + data.otp_code, 'success');
+                    console.log('OTP Code:', data.otp_code);
+                } else {
+                    showAlert('Verification code resent!', 'success');
+                }
+            } else {
+                showAlert(data.error || 'Failed to resend code', 'danger');
+            }
+        } catch (error) {
+            showAlert('Network error. Please try again.', 'danger');
+        } finally {
+            resendOtpBtn.disabled = false;
+            resendOtpBtn.innerHTML = '<i class="fas fa-redo me-1"></i>Resend Code';
+        }
+    });
+    
+    // Handle back to registration
+    backToRegister.addEventListener('click', function() {
+        otpForm.classList.add('d-none');
+        registerForm.classList.remove('d-none');
+        document.getElementById('otpCode').value = '';
+    });
+    
+    // Helper function to show alerts
+    function showAlert(message, type) {
+        const alertContainer = document.getElementById('alertContainer');
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} alert-dismissible fade show`;
+        alert.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        alertContainer.innerHTML = '';
+        alertContainer.appendChild(alert);
+        
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            if (alert.parentNode) {
+                alert.remove();
+            }
+        }, 5000);
+    }
+});
+</script>
+{% endblock %}

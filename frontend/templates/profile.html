@@ -1,0 +1,430 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - E-Waste Management System{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="mb-1">
+                <i class="fas fa-user-edit text-primary me-2"></i>My Profile
+            </h2>
+            <p class="text-muted mb-0">Manage your account information and preferences</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Profile Form -->
+        <div class="col-lg-8 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-user text-primary me-2"></i>Personal Information
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="profileForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="firstName" class="form-label">First Name *</label>
+                                <input type="text" class="form-control" id="firstName" name="first_name" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="lastName" class="form-label">Last Name *</label>
+                                <input type="text" class="form-control" id="lastName" name="last_name" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" readonly>
+                                <div class="form-text">Username cannot be changed</div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email" readonly>
+                                <div class="form-text">Email cannot be changed</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="phone" name="phone">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <textarea class="form-control" id="address" name="address" rows="3" placeholder="Enter your full address"></textarea>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-outline-danger" onclick="showChangePasswordModal()">
+                                <i class="fas fa-key me-2"></i>Change Password
+                            </button>
+                            <div>
+                                <button type="button" class="btn btn-secondary me-2" onclick="resetForm()">
+                                    <i class="fas fa-undo me-2"></i>Reset
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Update Profile
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Stats -->
+        <div class="col-lg-4 mb-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-bar text-success me-2"></i>Account Statistics
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="stat-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Member Since</span>
+                            <strong id="memberSince">-</strong>
+                        </div>
+                    </div>
+                    <div class="stat-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Total Items</span>
+                            <strong id="totalItems">0</strong>
+                        </div>
+                    </div>
+                    <div class="stat-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Items Recycled</span>
+                            <strong id="recycledItems">0</strong>
+                        </div>
+                    </div>
+                    <div class="stat-item mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Collections</span>
+                            <strong id="totalCollections">0</strong>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Environmental Impact</span>
+                            <strong class="text-success" id="impactScore">Good</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Actions -->
+            <div class="card border-0 shadow-sm mt-4">
+                <div class="card-header bg-white">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-cog text-secondary me-2"></i>Account Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary" onclick="exportData()">
+                            <i class="fas fa-download me-2"></i>Export My Data
+                        </button>
+                        <button class="btn btn-outline-warning" onclick="showDeactivateModal()">
+                            <i class="fas fa-user-slash me-2"></i>Deactivate Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-key text-warning me-2"></i>Change Password
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm">
+                    <div class="mb-3">
+                        <label for="currentPassword" class="form-label">Current Password *</label>
+                        <input type="password" class="form-control" id="currentPassword" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">New Password *</label>
+                        <input type="password" class="form-control" id="newPassword" required>
+                        <div class="form-text">Password must be at least 6 characters long</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirm New Password *</label>
+                        <input type="password" class="form-control" id="confirmPassword" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-warning" onclick="submitPasswordChange()">
+                    <i class="fas fa-save me-2"></i>Change Password
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.stat-item {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+#navbar {
+    display: block !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        window.location.href = '/';
+        return;
+    }
+    
+    loadProfile();
+    loadStats();
+    setupFormValidation();
+});
+
+async function loadProfile() {
+    try {
+        const token = localStorage.getItem('access_token');
+        const response = await fetch('/api/auth/profile', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            const user = data.user;
+            
+            document.getElementById('firstName').value = user.first_name || '';
+            document.getElementById('lastName').value = user.last_name || '';
+            document.getElementById('username').value = user.username || '';
+            document.getElementById('email').value = user.email || '';
+            document.getElementById('phone').value = user.phone || '';
+            document.getElementById('address').value = user.address || '';
+            
+            // Update member since
+            if (user.created_at) {
+                const memberSince = new Date(user.created_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long'
+                });
+                document.getElementById('memberSince').textContent = memberSince;
+            }
+        }
+    } catch (error) {
+        console.error('Error loading profile:', error);
+        showAlert('Failed to load profile data', 'danger');
+    }
+}
+
+async function loadStats() {
+    try {
+        const token = localStorage.getItem('access_token');
+        const response = await fetch('/api/dashboard/stats', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            const stats = data.stats;
+            
+            document.getElementById('totalItems').textContent = stats.total_items;
+            document.getElementById('recycledItems').textContent = stats.recycled_items;
+            document.getElementById('totalCollections').textContent = stats.pending_collections;
+            
+            // Calculate impact score
+            const impactScore = calculateImpactScore(stats);
+            document.getElementById('impactScore').textContent = impactScore;
+        }
+    } catch (error) {
+        console.error('Error loading stats:', error);
+    }
+}
+
+function calculateImpactScore(stats) {
+    const recycleRate = stats.total_items > 0 ? (stats.recycled_items / stats.total_items) : 0;
+    
+    if (recycleRate >= 0.8) return 'Excellent';
+    if (recycleRate >= 0.6) return 'Very Good';
+    if (recycleRate >= 0.4) return 'Good';
+    if (recycleRate >= 0.2) return 'Fair';
+    return 'Getting Started';
+}
+
+function setupFormValidation() {
+    const form = document.getElementById('profileForm');
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        await submitProfile();
+    });
+    
+    // Password confirmation validation
+    const confirmPassword = document.getElementById('confirmPassword');
+    const newPassword = document.getElementById('newPassword');
+    
+    if (confirmPassword && newPassword) {
+        confirmPassword.addEventListener('input', function() {
+            if (this.value !== newPassword.value) {
+                this.setCustomValidity('Passwords do not match');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+        
+        newPassword.addEventListener('input', function() {
+            if (confirmPassword.value && confirmPassword.value !== this.value) {
+                confirmPassword.setCustomValidity('Passwords do not match');
+            } else {
+                confirmPassword.setCustomValidity('');
+            }
+        });
+    }
+}
+
+async function submitProfile() {
+    const formData = new FormData(document.getElementById('profileForm'));
+    const profileData = {
+        first_name: formData.get('first_name'),
+        last_name: formData.get('last_name'),
+        phone: formData.get('phone'),
+        address: formData.get('address')
+    };
+    
+    try {
+        const token = localStorage.getItem('access_token');
+        const response = await fetch('/api/auth/profile', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(profileData)
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            
+            // Update stored user data
+            localStorage.setItem('user_data', JSON.stringify(data.user));
+            
+            // Update navbar display name
+            const userDisplayName = document.getElementById('userDisplayName');
+            if (userDisplayName) {
+                userDisplayName.textContent = data.user.first_name || data.user.username;
+            }
+            
+            showAlert('Profile updated successfully!', 'success');
+        } else {
+            const error = await response.json();
+            showAlert(error.error || 'Failed to update profile', 'danger');
+        }
+    } catch (error) {
+        showAlert('Network error. Please try again.', 'danger');
+    }
+}
+
+function resetForm() {
+    loadProfile(); // Reload original data
+}
+
+function showChangePasswordModal() {
+    const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+    modal.show();
+}
+
+async function submitPasswordChange() {
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        showAlert('Please fill in all password fields', 'warning');
+        return;
+    }
+    
+    if (newPassword.length < 6) {
+        showAlert('New password must be at least 6 characters long', 'warning');
+        return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+        showAlert('New passwords do not match', 'warning');
+        return;
+    }
+    
+    try {
+        const token = localStorage.getItem('access_token');
+        const response = await fetch('/api/auth/change-password', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                current_password: currentPassword,
+                new_password: newPassword
+            })
+        });
+        
+        if (response.ok) {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
+            modal.hide();
+            document.getElementById('changePasswordForm').reset();
+            showAlert('Password changed successfully!', 'success');
+        } else {
+            const error = await response.json();
+            showAlert(error.error || 'Failed to change password', 'danger');
+        }
+    } catch (error) {
+        showAlert('Network error. Please try again.', 'danger');
+    }
+}
+
+function exportData() {
+    showAlert('Data export feature coming soon!', 'info');
+}
+
+function showDeactivateModal() {
+    if (confirm('Are you sure you want to deactivate your account? This action can be reversed by contacting support.')) {
+        showAlert('Account deactivation feature coming soon!', 'info');
+    }
+}
+
+function showAlert(message, type) {
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    alert.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    alert.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    document.body.appendChild(alert);
+    
+    setTimeout(() => {
+        if (alert.parentNode) alert.remove();
+    }, 5000);
+}
+</script>
+{% endblock %}

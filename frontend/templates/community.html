@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}Community - E-Waste Management System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row mb-3">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+      <h3 class="mb-0"><i class="fas fa-users text-success me-2"></i>Community Feed</h3>
+      <button class="btn btn-success" onclick="showCreatePostModal()">
+        <i class="fas fa-plus me-2"></i>Create Post
+      </button>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <div class="col-md-4">
+      <input id="searchInput" class="form-control" placeholder="Search posts..." oninput="reloadPosts()" />
+    </div>
+    <div class="col-md-4">
+      <select id="typeFilter" class="form-select" onchange="reloadPosts()">
+        <option value="">All Types</option>
+        <option value="eco-hack">Eco Hack</option>
+        <option value="diy-craft">DIY Craft</option>
+        <option value="cleanup">Cleanup Story</option>
+        <option value="tip">Green Tip</option>
+        <option value="general">General</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="postsContainer" class="row">
+    <div class="col-12 text-center py-5 text-muted">
+      <div class="spinner-border text-success"></div>
+      <div class="mt-2">Loading posts...</div>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mt-3" id="paginationBar" style="display:none;">
+    <button class="btn btn-outline-secondary" id="prevPage" onclick="changePage(-1)">Prev</button>
+    <span id="pageLabel" class="small text-muted"></span>
+    <button class="btn btn-outline-secondary" id="nextPage" onclick="changePage(1)">Next</button>
+  </div>
+</div>
+
+<!-- Create Post Modal -->
+<div class="modal fade" id="createPostModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fas fa-pen text-success me-2"></i>Create Community Post</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="postForm">
+          <div class="row">
+            <div class="col-md-8 mb-3">
+              <label class="form-label">Title *</label>
+              <input type="text" class="form-control" name="title" required />
+            </div>
+            <div class="col-md-4 mb-3">
+              <label class="form-label">Type *</label>
+              <select class="form-select" name="post_type" required>
+                <option value="eco-hack">Eco Hack</option>
+                <option value="diy-craft">DIY Craft</option>
+                <option value="cleanup">Cleanup Story</option>
+                <option value="tip">Green Tip</option>
+                <option value="general" selected>General</option>
+              </select>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Content *</label>
+            <textarea class="form-control" name="content" rows="4" required></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Tags (comma separated)</label>
+            <input type="text" class="form-control" name="tags" placeholder="recycle, plastic, diy" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Image</label>
+            <input type="file" class="form-control" name="image" accept="image/*" />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button class="btn btn-success" onclick="submitPost()"><i class="fas fa-paper-plane me-2"></i>Publish</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.post-card:hover { transform: translateY(-2px); }
+.post-card { transition: transform .2s; }
+.badge-tag { background: #e8f6ef; color: #198754; margin-right: .3rem; }
+</style>
+
+<script>
+let currentPage = 1;
+let totalPages = 1;
+
+function showCreatePostModal() {
+  document.getElementById('postForm').reset();
+  new bootstrap.Modal(document.getElementById('createPostModal')).show();
+}
+
+async function submitPost() {
+  const form = document.getElementById('postForm');
+  const formData = new FormData(form);
+  try {
+    const token = localStorage.getItem('access_token');
+    const res = await fetch('/api/community/posts', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` },
+      body: formData
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      showAlert(err.error || 'Failed to create post', 'danger');
+      return;
+    }
+    bootstrap.Modal.getInstance(document.getElementById('createPostModal')).hide();
+    showAlert('Post created successfully!', 'success');
+    currentPage = 1;
+    await reloadPosts();
+  } catch (e) { showAlert('Network error creating post', 'danger'); }
+}
+
+function postCard(post) {
+  const tags = (post.tags || []).map(t => `<span class=\"badge badge-tag\">#${t}</span>`).join(' ');
+  const img = post.image_path ? `<img src="/uploads/${post.image_path}" class="img-fluid rounded mb-2" alt="post image">` : '';
+  const user = post.user ? `${post.user.first_name || ''} ${post.user.last_name || ''}`.trim() || post.user.username : 'User';
+  return `
+  <div class=\"col-12\">
+    <div class=\"card shadow-sm border-0 post-card mb-3\">
+      <div class=\"card-body\">
+        <div class=\"d-flex justify-content-between\">
+          <h5 class=\"card-title mb-1\">${post.title}</h5>
+          <span class=\"badge bg-light text-dark\">${post.post_type}</span>
+        </div>
+        <div class=\"text-muted small mb-2\">by <i class=\"fas fa-user\"></i> ${user} • ${new Date(post.created_at).toLocaleString()}</div>
+        ${img}
+        <p class=\"card-text\">${post.content}</p>
+        <div class=\"mb-2\">${tags}</div>
+        <div class=\"d-flex align-items-center gap-2\">
+          <button class=\"btn btn-sm btn-outline-success\" onclick=\"toggleLike(${post.id})\"><i class=\"fas fa-heart\"></i> <span id=\"likes-${post.id}\">${post.likes_count}</span></button>
+          <button class=\"btn btn-sm btn-outline-primary\" onclick=\"showCommentBox(${post.id})\"><i class=\"fas fa-comment\"></i> ${post.comments_count}</button>
+        </div>
+        <div id=\"commentBox-${post.id}\" class=\"mt-2 d-none\">
+          <div class=\"input-group\">
+            <input id=\"commentInput-${post.id}\" class=\"form-control\" placeholder=\"Write a comment...\" />
+            <button class=\"btn btn-primary\" onclick=\"submitComment(${post.id})\">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function showCommentBox(id){
+  const el = document.getElementById(`commentBox-${id}`);
+  if (el) el.classList.toggle('d-none');
+}
+
+async function toggleLike(postId){
+  try {
+    const token = localStorage.getItem('access_token');
+    const res = await fetch(`/api/community/posts/${postId}/like`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById(`likes-${postId}`).textContent = data.likes_count;
+    }
+  } catch (e) {}
+}
+
+async function submitComment(postId){
+  try {
+    const token = localStorage.getItem('access_token');
+    const input = document.getElementById(`commentInput-${postId}`);
+    const res = await fetch(`/api/community/posts/${postId}/comments`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ content: input.value })
+    });
+    if (res.ok) {
+      input.value = '';
+      showAlert('Comment added!', 'success');
+    }
+  } catch (e) {}
+}
+
+async function reloadPosts(){
+  const search = document.getElementById('searchInput').value;
+  const type = document.getElementById('typeFilter').value;
+  const token = localStorage.getItem('access_token');
+  const params = new URLSearchParams({ page: currentPage, per_page: 10 });
+  if (search) params.append('search', search);
+  if (type) params.append('type', type);
+  const res = await fetch(`/api/community/posts?${params.toString()}`, { headers: { 'Authorization': `Bearer ${token}` } });
+  const data = await res.json();
+  const container = document.getElementById('postsContainer');
+  if (!data.success || data.posts.length === 0){
+    container.innerHTML = `<div class='col-12 text-center text-muted py-5'>No posts yet. Be the first to share!</div>`;
+    document.getElementById('paginationBar').style.display = 'none';
+    return;
+  }
+  container.innerHTML = data.posts.map(postCard).join('');
+  totalPages = data.pages; currentPage = data.current_page;
+  document.getElementById('paginationBar').style.display = 'flex';
+  document.getElementById('pageLabel').textContent = `Page ${currentPage} of ${totalPages}`;
+  document.getElementById('prevPage').disabled = currentPage <= 1;
+  document.getElementById('nextPage').disabled = currentPage >= totalPages;
+}
+
+function changePage(delta){
+  const next = currentPage + delta;
+  if (next < 1 || next > totalPages) return;
+  currentPage = next;
+  reloadPosts();
+}
+
+// Init
+window.addEventListener('DOMContentLoaded', () => reloadPosts());
+</script>
+{% endblock %}

@@ -1,0 +1,661 @@
+/* Custom CSS for E-Waste Management System */
+
+:root {
+    --primary-color: #198754;
+    --secondary-color: #20c997;
+    --success-color: #198754;
+    --info-color: #0dcaf0;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+}
+
+/* Global Styles */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--light-color);
+    line-height: 1.6;
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%) !important;
+}
+
+/* Navigation */
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.navbar-nav .nav-link {
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #fff !important;
+    transform: translateY(-1px);
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.card-header {
+    border-bottom: 1px solid #e9ecef;
+    background-color: #fff;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #157347 100%);
+    border: none;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #157347 0%, #146c43 100%);
+}
+
+/* Forms */
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+}
+
+.form-label {
+    font-weight: 500;
+    color: #495057;
+}
+
+/* Mobile-Optimized Forms */
+@media (max-width: 768px) {
+    .form-control,
+    .form-select,
+    .btn {
+        font-size: 16px !important; /* Prevents zoom on iOS */
+        min-height: 44px;
+        padding: 12px 16px;
+    }
+    
+    .form-label {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+    
+    .input-group {
+        margin-bottom: 1rem;
+    }
+    
+    .input-group-text {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+    }
+    
+    /* Improve textarea on mobile */
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+    }
+    
+    /* Better checkbox and radio buttons */
+    .form-check-input {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-top: 0.125rem;
+    }
+    
+    .form-check-label {
+        font-size: 16px;
+        padding-left: 0.5rem;
+    }
+    
+    /* Floating labels optimization */
+    .form-floating > .form-control,
+    .form-floating > .form-select {
+        height: calc(3.5rem + 2px);
+        line-height: 1.25;
+        font-size: 16px;
+    }
+    
+    .form-floating > label {
+        padding: 1rem 0.75rem;
+        font-size: 14px;
+    }
+    
+    /* Modal forms */
+    .modal-body .form-control,
+    .modal-body .form-select {
+        margin-bottom: 1rem;
+    }
+    
+    /* Form validation styles */
+    .is-invalid {
+        border-color: #dc3545;
+    }
+    
+    .invalid-feedback {
+        font-size: 14px;
+        margin-top: 0.25rem;
+    }
+    
+    /* Form groups spacing */
+    .mb-3 {
+        margin-bottom: 1.5rem !important;
+    }
+    
+    /* Submit buttons */
+    .btn[type="submit"] {
+        width: 100%;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+}
+
+/* Touch-friendly improvements */
+.touch-device .form-control,
+.touch-device .form-select,
+.touch-device .btn {
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.touch-device .form-control:focus,
+.touch-device .form-select:focus {
+    transform: scale(1.02);
+}
+
+/* Keyboard improvements */
+.form-control[type="email"] {
+    text-transform: lowercase;
+}
+
+.form-control[type="tel"] {
+    direction: ltr;
+}
+
+/* Auto-complete styling */
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover,
+.form-control:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px white inset;
+    -webkit-text-fill-color: #212529;
+}
+
+/* Statistics Cards */
+.stat-card {
+    background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+    border-left: 4px solid var(--primary-color);
+}
+
+.stat-card .card-body {
+    padding: 1.5rem;
+}
+
+.stat-card h3 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+/* Login Pages */
+.login-container {
+    background: linear-gradient(135deg, rgba(25, 135, 84, 0.05) 0%, rgba(32, 201, 151, 0.05) 100%);
+}
+
+.login-form-container .card,
+.register-form-container .card {
+    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+/* OTP Verification Styles */
+.otp-container {
+    margin: 2rem 0;
+}
+
+.otp-inputs {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin: 1rem 0;
+}
+
+.otp-input {
+    width: 50px;
+    height: 60px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: 2px solid #ced4da;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.otp-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+    outline: none;
+}
+
+.otp-input.filled {
+    border-color: var(--success-color);
+    background-color: rgba(25, 135, 84, 0.05);
+}
+
+.otp-timer {
+    text-align: center;
+    margin: 1rem 0;
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.otp-timer.expired {
+    color: var(--danger-color);
+}
+
+.resend-otp {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.resend-otp button {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+}
+
+.resend-otp button:disabled {
+    color: #6c757d;
+    cursor: not-allowed;
+    text-decoration: none;
+}
+
+/* Registration Steps */
+.registration-steps {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.registration-steps::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #e9ecef;
+    z-index: 1;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.step.active .step-number {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.step.completed .step-number {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.step-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-align: center;
+}
+
+.step.active .step-label {
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+.step.completed .step-label {
+    color: var(--success-color);
+}
+
+/* Dashboard Specific */
+.welcome-card {
+    border-radius: 15px;
+    position: relative;
+    overflow: hidden;
+}
+
+.welcome-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.welcome-card > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Impact Section */
+.impact-stats {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 1rem;
+    border-radius: 8px;
+    margin-top: 1rem;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Loading States */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* Mobile-First Responsive Design */
+@media (max-width: 576px) {
+    /* Extra small devices (phones) */
+    .container-fluid {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    .welcome-card {
+        margin-bottom: 1rem;
+        padding: 1rem !important;
+    }
+    
+    .welcome-card h2 {
+        font-size: 1.5rem;
+    }
+    
+    .stat-card h3 {
+        font-size: 1.3rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .btn {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    .btn-lg {
+        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
+    }
+    
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+    
+    .modal-lg {
+        max-width: calc(100vw - 1rem);
+    }
+    
+    .form-control, .form-select {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    .table-responsive {
+        font-size: 0.875rem;
+    }
+    
+    .dropdown-menu {
+        font-size: 0.9rem;
+    }
+    
+    /* Touch-friendly buttons */
+    .btn-sm {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Improved spacing for mobile */
+    .mb-3 {
+        margin-bottom: 1.5rem !important;
+    }
+    
+    /* Hide less important content on mobile */
+    .d-xs-none {
+        display: none !important;
+    }
+}
+
+@media (min-width: 577px) and (max-width: 768px) {
+    /* Small devices (tablets) */
+    .container-fluid {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .welcome-card {
+        margin-bottom: 1rem;
+    }
+    
+    .stat-card h3 {
+        font-size: 1.5rem;
+    }
+    
+    .modal-lg {
+        max-width: 90vw;
+    }
+    
+    .card-columns {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+    /* Medium devices (small laptops) */
+    .card-columns {
+        column-count: 3;
+    }
+    
+    .modal-lg {
+        max-width: 80vw;
+    }
+}
+
+@media (min-width: 993px) {
+    /* Large devices (desktops) */
+    .card-columns {
+        column-count: 4;
+    }
+}
+
+/* Common responsive improvements */
+@media (max-width: 768px) {
+    .login-form-container {
+        padding: 1rem;
+    }
+}    
+    .row.text-center.mb-3 .col-6 {
+        margin-bottom: 1rem;
+    }
+    
+    /* Stack form elements on mobile */
+    .row > [class*="col-"] {
+        margin-bottom: 0.75rem;
+    }
+    
+    /* Improve table responsiveness */
+    .table-responsive {
+        border: none;
+    }
+    
+    /* Better spacing for cards */
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    /* Improve navigation on mobile */
+    .navbar-nav .nav-link {
+        padding: 0.75rem 1rem;
+    }
+    
+    .dropdown-menu {
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+}
+
+/* Status Badges */
+.badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+}
+
+/* Progress Bars */
+.progress {
+    height: 8px;
+    border-radius: 4px;
+    background-color: #e9ecef;
+}
+
+.progress-bar {
+    border-radius: 4px;
+}
+
+/* Modals */
+.modal-content {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-bottom: 1px solid #e9ecef;
+    border-radius: 12px 12px 0 0;
+}
+
+.modal-footer {
+    border-top: 1px solid #e9ecef;
+    border-radius: 0 0 12px 12px;
+}
+
+/* Utilities */
+.text-gradient {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.shadow-soft {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08) !important;
+}
+
+.border-radius-lg {
+    border-radius: 12px !important;
+}
+
+/* Footer */
+footer {
+    margin-top: auto;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #157347;
+}

@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics - E-Waste Management System{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0"><i class="fas fa-chart-line text-success me-2"></i>Analytics Dashboard</h3>
+    <div>
+      <select id="trendDays" class="form-select form-select-sm" style="width:auto;display:inline-block" onchange="loadTrends()">
+        <option value="7">Last 7 days</option>
+        <option value="30" selected>Last 30 days</option>
+        <option value="90">Last 90 days</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body text-center">
+          <div class="text-muted small">My Items</div>
+          <div class="display-6" id="statTotalItems">0</div>
+          <div class="text-success small">Completed: <span id="statCompleted">0</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body text-center">
+          <div class="text-muted small">Scans Performed</div>
+          <div class="display-6" id="statScans">0</div>
+          <div class="text-muted small">Last 7d: <span id="statRecentScans">0</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+          <div class="text-muted small">My Environmental Impact</div>
+          <div class="row text-center mt-2">
+            <div class="col-4"><small>CO₂ Saved</small><div class="h4" id="impactCO2Total">0 kg</div></div>
+            <div class="col-4"><small>Energy</small><div class="h4" id="impactEnergyTotal">0 kWh</div></div>
+            <div class="col-4"><small>Water</small><div class="h4" id="impactWaterTotal">0 L</div></div>
+          </div>
+          <div class="text-center small text-muted">Trees equivalent: <span id="impactTrees">0</span> • Car miles: <span id="impactMiles">0</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3 mt-1">
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white"><strong>Daily Activity</strong></div>
+        <div class="card-body">
+          <div id="dailyActivity" class="small"></div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card shadow-sm border-0 mb-3">
+        <div class="card-header bg-white"><strong>Category Trends</strong></div>
+        <div class="card-body" id="categoryTrends">Loading...</div>
+      </div>
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white"><strong>AI Scanner Accuracy</strong></div>
+        <div class="card-body" id="accuracyStats">Loading...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm border-0 mt-3">
+    <div class="card-header bg-white"><strong>Community Leaderboard</strong></div>
+    <div class="card-body">
+      <div class="row" id="leaderboards">
+        <div class="col-md-4"><h6>Top Recyclers</h6><div id="lbRecyclers">Loading...</div></div>
+        <div class="col-md-4"><h6>Top Scanners</h6><div id="lbScanners">Loading...</div></div>
+        <div class="col-md-4"><h6>Top Community</h6><div id="lbCommunity">Loading...</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+#dailyActivity .bar { background:#e9f5ee; border-radius:4px; overflow:hidden; margin-bottom:6px; }
+#dailyActivity .fill { background:#198754; height:8px; }
+</style>
+
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  loadUserStats();
+  loadTrends();
+  loadLeaderboards();
+});
+
+async function loadUserStats(){
+  const token = localStorage.getItem('access_token');
+  const res = await fetch('/api/analytics/dashboard', { headers: { 'Authorization': `Bearer ${token}` }});
+  if (!res.ok) return;
+  const data = await res.json();
+  const s = data.user_stats;
+  document.getElementById('statTotalItems').textContent = s.total_items;
+  document.getElementById('statCompleted').textContent = s.completed_collections;
+  document.getElementById('statScans').textContent = s.scans_performed;
+  document.getElementById('statRecentScans').textContent = s.recent_activity.scans_performed;
+  const impact = s.carbon_impact;
+  document.getElementById('impactCO2Total').textContent = `${(impact.carbon_saved_kg||0).toFixed(1)} kg`;
+  document.getElementById('impactEnergyTotal').textContent = `${(impact.energy_saved_kwh||0).toFixed(1)} kWh`;
+  document.getElementById('impactWaterTotal').textContent = `${(impact.water_saved_liters||0).toFixed(1)} L`;
+  document.getElementById('impactTrees').textContent = Math.round((impact.carbon_saved_kg||0)/22);
+  document.getElementById('impactMiles').textContent = Math.round((impact.carbon_saved_kg||0)/0.4);
+}
+
+async function loadTrends(){
+  const token = localStorage.getItem('access_token');
+  const days = document.getElementById('trendDays').value;
+  const res = await fetch(`/api/analytics/recycling-trends?days=${days}`, { headers: { 'Authorization': `Bearer ${token}` }});
+  if (!res.ok) return;
+  const data = await res.json();
+  const container = document.getElementById('dailyActivity');
+  const maxVal = Math.max(...data.trends.daily_activity.map(d => d.items_added + d.scans_performed), 1);
+  container.innerHTML = data.trends.daily_activity.map(d => {
+    const val = d.items_added + d.scans_performed;
+    const pct = Math.round((val/maxVal)*100);
+    return `<div class='d-flex align-items-center justify-content-between'><span class='small text-muted' style='width:90px;'>${d.date}</span><div class='bar flex-grow-1 mx-2'><div class='fill' style='width:${pct}%'></div></div><span class='small text-muted' style='width:50px; text-align:right;'>${val}</span></div>`
+  }).join('');
+  // Category trends
+  const cat = data.trends.category_trends.map(c => `<div class='d-flex justify-content-between'><span>${c.category}</span><span class='text-muted'>${c.scan_count} scans</span></div>`).join('');
+  document.getElementById('categoryTrends').innerHTML = cat || '<span class="text-muted">No data</span>';
+  const acc = data.trends.accuracy_stats;
+  document.getElementById('accuracyStats').innerHTML = `<div class='d-flex justify-content-between'><span>Accuracy</span><strong>${(acc.accuracy_rate||0).toFixed(1)}%</strong></div><div class='text-muted small'>Based on ${acc.total_feedback||0} feedback</div>`;
+}
+
+async function loadLeaderboards(){
+  const token = localStorage.getItem('access_token');
+  const res = await fetch('/api/analytics/leaderboard', { headers: { 'Authorization': `Bearer ${token}` }});
+  if (!res.ok) return;
+  const data = await res.json();
+  const render = (arr, key) => arr.map(i => `<div class='d-flex justify-content-between'><span>#${i.rank} ${i.username}</span><strong>${i[key]}</strong></div>`).join('');
+  document.getElementById('lbRecyclers').innerHTML = render(data.leaderboard.top_recyclers || [], 'carbon_saved_kg');
+  document.getElementById('lbScanners').innerHTML = render(data.leaderboard.top_scanners || [], 'scan_count');
+  document.getElementById('lbCommunity').innerHTML = render(data.leaderboard.top_community || [], 'post_count');
+}
+</script>
+{% endblock %}
