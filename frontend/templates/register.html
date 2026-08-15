@@ -3,160 +3,462 @@
 {% block title %}Register - E-Waste Management System{% endblock %}
 
 {% block content %}
+
 <div class="register-container">
+
     <div class="container-fluid h-100">
+
         <div class="row h-100">
-            <!-- Left Side - Branding -->
+
+            <!-- LEFT SIDE -->
             <div class="col-lg-6 d-none d-lg-flex bg-success text-white p-0">
+
                 <div class="d-flex flex-column justify-content-center align-items-center w-100 p-5">
+
                     <div class="text-center">
+
                         <i class="fas fa-recycle display-1 mb-4"></i>
-                        <h1 class="display-4 fw-bold mb-4">Join E-Waste Manager</h1>
-                        <p class="lead mb-4">Create your account and start managing e-waste responsibly</p>
+
+                        <h1 class="display-4 fw-bold mb-4">
+                            Join E-Waste Manager
+                        </h1>
+
+                        <p class="lead mb-4">
+                            Create your account and start managing e-waste responsibly
+                        </p>
+
                         <div class="row text-center">
+
                             <div class="col-4">
                                 <i class="fas fa-laptop fa-2x mb-2"></i>
                                 <p class="small">Track Devices</p>
                             </div>
+
                             <div class="col-4">
                                 <i class="fas fa-truck fa-2x mb-2"></i>
                                 <p class="small">Schedule Pickup</p>
                             </div>
+
                             <div class="col-4">
                                 <i class="fas fa-leaf fa-2x mb-2"></i>
                                 <p class="small">Go Green</p>
                             </div>
+
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
-            
-            <!-- Right Side - Registration Form -->
+
+
+            <!-- RIGHT SIDE -->
             <div class="col-lg-6 d-flex align-items-center justify-content-center">
-                <div class="register-form-container w-100" style="max-width: 400px;">
+
+                <div
+                    class="register-form-container w-100"
+                    style="max-width: 450px;"
+                >
+
                     <div class="text-center mb-4 d-lg-none">
-                        <i class="fas fa-recycle text-success" style="font-size: 3rem;"></i>
-                        <h2 class="text-success">E-Waste Manager</h2>
+
+                        <i
+                            class="fas fa-recycle text-success"
+                            style="font-size: 3rem;"
+                        ></i>
+
+                        <h2 class="text-success">
+                            E-Waste Manager
+                        </h2>
+
                     </div>
-                    
+
+
                     <div class="card shadow-lg border-0">
+
                         <div class="card-body p-5">
-                            <h3 class="card-title text-center mb-4">Create Account</h3>
-                            
-                            <!-- Alert Messages -->
+
+                            <h3 class="card-title text-center mb-4">
+                                Create Account
+                            </h3>
+
+
                             <div id="alertContainer"></div>
-                            
-                            <!-- Step 1: Registration Form -->
-                            <form id="registerForm">
-                                <div class="mb-3">
-                                    <label for="firstName" class="form-label">
-                                        <i class="fas fa-user me-2"></i>First Name
-                                    </label>
-                                    <input type="text" class="form-control form-control-lg" id="firstName" name="first_name" required>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="lastName" class="form-label">
-                                        <i class="fas fa-user me-2"></i>Last Name
-                                    </label>
-                                    <input type="text" class="form-control form-control-lg" id="lastName" name="last_name" required>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">
-                                        <i class="fas fa-envelope me-2"></i>Email Address
-                                    </label>
-                                    <input type="email" class="form-control form-control-lg" id="email" name="email" required>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="username" class="form-label">
-                                        <i class="fas fa-user-tag me-2"></i>Username
-                                    </label>
-                                    <input type="text" class="form-control form-control-lg" id="username" name="username" required>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">
-                                        <i class="fas fa-lock me-2"></i>Password
-                                    </label>
-                                    <div class="input-group">
-                                        <input type="password" class="form-control form-control-lg" id="password" name="password" required minlength="6">
-                                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                            <i class="fas fa-eye"></i>
-                                        </button>
+
+
+                            <!-- ================================
+                                 STEP 1 - REGISTRATION DETAILS
+                            ================================= -->
+
+                            <div id="registrationStep">
+
+                                <form id="registerForm">
+
+                                    <!-- FIRST NAME -->
+                                    <div class="mb-3">
+
+                                        <label
+                                            for="firstName"
+                                            class="form-label"
+                                        >
+                                            <i class="fas fa-user me-2"></i>
+                                            First Name
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            class="form-control form-control-lg"
+                                            id="firstName"
+                                            name="first_name"
+                                            required
+                                        >
+
                                     </div>
-                                    <small class="text-muted">Password must be at least 6 characters</small>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="confirmPassword" class="form-label">
-                                        <i class="fas fa-lock me-2"></i>Confirm Password
-                                    </label>
-                                    <input type="password" class="form-control form-control-lg" id="confirmPassword" name="confirm_password" required>
-                                </div>
-                                
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-success btn-lg" id="registerBtn">
-                                        <i class="fas fa-user-plus me-2"></i>
-                                        <span id="registerBtnText">Create Account</span>
-                                        <div class="spinner-border spinner-border-sm ms-2 d-none" id="registerSpinner"></div>
-                                    </button>
-                                </div>
-                            </form>
-                            
-                            <!-- Step 2: OTP Verification (Hidden Initially) -->
-                            <form id="otpForm" class="d-none">
-                                <div class="text-center mb-4">
-                                    <i class="fas fa-envelope-open-text text-success fa-3x mb-3"></i>
-                                    <h5>Verify Your Email</h5>
-                                    <p class="text-muted">We've sent a 6-digit verification code to <strong id="otpEmail"></strong></p>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <label for="otpCode" class="form-label">Enter Verification Code</label>
-                                    <input type="text" class="form-control form-control-lg text-center" id="otpCode" name="otp_code" 
-                                           pattern="[0-9]{6}" maxlength="6" placeholder="000000" required>
-                                </div>
-                                
-                                <div class="d-grid mb-3">
-                                    <button type="submit" class="btn btn-success btn-lg" id="verifyBtn">
-                                        <i class="fas fa-check me-2"></i>
-                                        <span id="verifyBtnText">Verify Email</span>
-                                        <div class="spinner-border spinner-border-sm ms-2 d-none" id="verifySpinner"></div>
-                                    </button>
-                                </div>
-                                
-                                <div class="text-center">
-                                    <button type="button" class="btn btn-link btn-sm" id="resendOtpBtn">
-                                        <i class="fas fa-redo me-1"></i>Resend Code
-                                    </button>
-                                    <button type="button" class="btn btn-link btn-sm" id="backToRegister">
-                                        <i class="fas fa-arrow-left me-1"></i>Back to Registration
-                                    </button>
-                                </div>
-                            </form>
-                            
-                            <hr class="my-4">
-                            
-                            <div class="text-center">
-                                <p class="mb-0">Already have an account? <a href="/login" class="text-success">Sign In</a></p>
+
+
+                                    <!-- LAST NAME -->
+                                    <div class="mb-3">
+
+                                        <label
+                                            for="lastName"
+                                            class="form-label"
+                                        >
+                                            <i class="fas fa-user me-2"></i>
+                                            Last Name
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            class="form-control form-control-lg"
+                                            id="lastName"
+                                            name="last_name"
+                                            required
+                                        >
+
+                                    </div>
+
+
+                                    <!-- EMAIL -->
+                                    <div class="mb-3">
+
+                                        <label
+                                            for="email"
+                                            class="form-label"
+                                        >
+                                            <i class="fas fa-envelope me-2"></i>
+                                            Email Address
+                                        </label>
+
+                                        <input
+                                            type="email"
+                                            class="form-control form-control-lg"
+                                            id="email"
+                                            name="email"
+                                            required
+                                        >
+
+                                    </div>
+
+
+                                    <!-- USERNAME -->
+                                    <div class="mb-3">
+
+                                        <label
+                                            for="username"
+                                            class="form-label"
+                                        >
+                                            <i class="fas fa-user-tag me-2"></i>
+                                            Username
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            class="form-control form-control-lg"
+                                            id="username"
+                                            name="username"
+                                            minlength="3"
+                                            maxlength="80"
+                                            autocomplete="username"
+                                            required
+                                        >
+
+                                        <div
+                                            id="usernameStatus"
+                                            class="small mt-1"
+                                            style="display:none;"
+                                            aria-live="polite"
+                                        ></div>
+
+                                    </div>
+
+
+                                    <!-- PASSWORD -->
+                                    <div class="mb-3">
+
+                                        <label
+                                            for="password"
+                                            class="form-label"
+                                        >
+                                            <i class="fas fa-lock me-2"></i>
+                                            Password
+                                        </label>
+
+                                        <div class="input-group">
+
+                                            <input
+                                                type="password"
+                                                class="form-control form-control-lg"
+                                                id="password"
+                                                name="password"
+                                                minlength="6"
+                                                required
+                                            >
+
+                                            <button
+                                                class="btn btn-outline-secondary"
+                                                type="button"
+                                                id="togglePassword"
+                                            >
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+
+                                        </div>
+
+                                        <small class="text-muted">
+                                            Password must be at least 6 characters
+                                        </small>
+
+                                    </div>
+
+
+                                    <!-- CONFIRM PASSWORD -->
+                                    <div class="mb-4">
+
+                                        <label
+                                            for="confirmPassword"
+                                            class="form-label"
+                                        >
+                                            <i class="fas fa-lock me-2"></i>
+                                            Confirm Password
+                                        </label>
+
+                                        <input
+                                            type="password"
+                                            class="form-control form-control-lg"
+                                            id="confirmPassword"
+                                            required
+                                        >
+
+                                    </div>
+
+
+                                    <!-- SEND OTP -->
+                                    <div class="d-grid">
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-success btn-lg"
+                                            id="sendOtpBtn"
+                                        >
+
+                                            <i class="fas fa-paper-plane me-2"></i>
+
+                                            <span id="sendOtpText">
+                                                Send OTP
+                                            </span>
+
+                                            <span
+                                                class="spinner-border spinner-border-sm ms-2 d-none"
+                                                id="sendOtpSpinner"
+                                            ></span>
+
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
                             </div>
+
+
+                            <!-- ================================
+                                 STEP 2 - OTP VERIFICATION
+                            ================================= -->
+
+                            <div
+                                id="otpStep"
+                                class="d-none"
+                            >
+
+                                <div class="text-center mb-4">
+
+                                    <div
+                                        class="rounded-circle bg-success bg-opacity-10 d-inline-flex align-items-center justify-content-center mb-3"
+                                        style="width:80px;height:80px;"
+                                    >
+
+                                        <i
+                                            class="fas fa-envelope-open-text text-success"
+                                            style="font-size:2rem;"
+                                        ></i>
+
+                                    </div>
+
+                                    <h4>
+                                        Verify Your Email
+                                    </h4>
+
+                                    <p class="text-muted">
+
+                                        We sent a 6-digit verification code to
+
+                                        <strong id="otpEmail"></strong>
+
+                                    </p>
+
+                                </div>
+
+
+                                <form id="otpForm">
+
+                                    <div class="mb-4">
+
+                                        <label
+                                            for="otpCode"
+                                            class="form-label text-center d-block"
+                                        >
+                                            Enter OTP
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            class="form-control form-control-lg text-center"
+                                            id="otpCode"
+                                            maxlength="6"
+                                            inputmode="numeric"
+                                            autocomplete="one-time-code"
+                                            placeholder="000000"
+                                            required
+                                            style="
+                                                letter-spacing: 10px;
+                                                font-size: 24px;
+                                                font-weight: bold;
+                                            "
+                                        >
+
+                                    </div>
+
+
+                                    <div class="d-grid mb-3">
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-success btn-lg"
+                                            id="verifyOtpBtn"
+                                        >
+
+                                            <i class="fas fa-check-circle me-2"></i>
+
+                                            <span id="verifyOtpText">
+                                                Verify OTP
+                                            </span>
+
+                                            <span
+                                                class="spinner-border spinner-border-sm ms-2 d-none"
+                                                id="verifyOtpSpinner"
+                                            ></span>
+
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
+
+                                <div class="text-center">
+
+                                    <p class="text-muted mb-2">
+                                        Didn't receive the code?
+                                    </p>
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-link text-success"
+                                        id="resendOtpBtn"
+                                    >
+                                        <i class="fas fa-redo me-1"></i>
+                                        Resend OTP
+                                    </button>
+
+                                </div>
+
+
+                                <div class="text-center mt-3">
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-link text-secondary"
+                                        id="backToRegistration"
+                                    >
+                                        <i class="fas fa-arrow-left me-1"></i>
+                                        Change details
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <hr class="my-4">
+
+
+                            <div class="text-center">
+
+                                <p class="mb-0">
+
+                                    Already have an account?
+
+                                    <a
+                                        href="/login"
+                                        class="text-success"
+                                    >
+                                        Sign In
+                                    </a>
+
+                                </p>
+
+                            </div>
+
                         </div>
+
                     </div>
-                    
+
+
                     <div class="text-center mt-4">
+
                         <small class="text-muted">
-                            By creating an account, you agree to our Terms of Service and Privacy Policy
+
+                            By creating an account, you agree to our
+                            Terms of Service and Privacy Policy
+
                         </small>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
 
+
 <style>
+
 .register-container {
     min-height: 100vh;
 }
@@ -185,226 +487,1039 @@
 }
 
 .bg-success {
-    background: linear-gradient(135deg, #198754 0%, #20c997 100%) !important;
+    background: linear-gradient(
+        135deg,
+        #198754 0%,
+        #20c997 100%
+    ) !important;
 }
 
 @media (max-width: 991.98px) {
+
     .register-container {
-        background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+        background: linear-gradient(
+            135deg,
+            #198754 0%,
+            #20c997 100%
+        );
     }
-    
+
     .register-form-container {
         padding: 1rem;
     }
+
 }
+
 </style>
 
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const registerForm = document.getElementById('registerForm');
-    const otpForm = document.getElementById('otpForm');
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirmPassword');
-    const registerBtn = document.getElementById('registerBtn');
-    const registerBtnText = document.getElementById('registerBtnText');
-    const registerSpinner = document.getElementById('registerSpinner');
-    const verifyBtn = document.getElementById('verifyBtn');
-    const verifyBtnText = document.getElementById('verifyBtnText');
-    const verifySpinner = document.getElementById('verifySpinner');
-    const resendOtpBtn = document.getElementById('resendOtpBtn');
-    const backToRegister = document.getElementById('backToRegister');
-    
-    let registrationData = {};
-    
-    // Toggle password visibility
-    togglePassword.addEventListener('click', function() {
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        confirmPasswordInput.setAttribute('type', type);
-        
-        const icon = this.querySelector('i');
-        icon.classList.toggle('fa-eye');
-        icon.classList.toggle('fa-eye-slash');
-    });
-    
-    // Handle registration form submission
-    registerForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        // Validate passwords match
-        if (passwordInput.value !== confirmPasswordInput.value) {
-            showAlert('Passwords do not match', 'danger');
-            return;
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+
+        /* =====================================================
+           ELEMENTS
+        ===================================================== */
+
+        const registerForm =
+            document.getElementById('registerForm');
+
+        const otpForm =
+            document.getElementById('otpForm');
+
+        const registrationStep =
+            document.getElementById('registrationStep');
+
+        const otpStep =
+            document.getElementById('otpStep');
+
+        const firstName =
+            document.getElementById('firstName');
+
+        const lastName =
+            document.getElementById('lastName');
+
+        const email =
+            document.getElementById('email');
+
+        const username =
+            document.getElementById('username');
+
+        const usernameStatus =
+            document.getElementById(
+                'usernameStatus'
+            );
+
+        const password =
+            document.getElementById('password');
+
+        const confirmPassword =
+            document.getElementById('confirmPassword');
+
+        const otpCode =
+            document.getElementById('otpCode');
+
+        const otpEmail =
+            document.getElementById('otpEmail');
+
+        const togglePassword =
+            document.getElementById('togglePassword');
+
+        const sendOtpBtn =
+            document.getElementById('sendOtpBtn');
+
+        const sendOtpText =
+            document.getElementById('sendOtpText');
+
+        const sendOtpSpinner =
+            document.getElementById('sendOtpSpinner');
+
+        const verifyOtpBtn =
+            document.getElementById('verifyOtpBtn');
+
+        const verifyOtpText =
+            document.getElementById('verifyOtpText');
+
+        const verifyOtpSpinner =
+            document.getElementById('verifyOtpSpinner');
+
+        const resendOtpBtn =
+            document.getElementById('resendOtpBtn');
+
+        const backToRegistration =
+            document.getElementById(
+                'backToRegistration'
+            );
+
+
+        /* =====================================================
+           TEMPORARY REGISTRATION DATA
+        ===================================================== */
+
+        let registrationData = null;
+
+        let usernameAvailable = false;
+
+        let usernameCheckTimer = null;
+
+        let usernameCheckController = null;
+
+
+        /* =====================================================
+           USERNAME AVAILABILITY
+        ===================================================== */
+
+        function resetUsernameStatus() {
+
+            usernameAvailable = false;
+
+            usernameStatus.style.display =
+                'none';
+
+            usernameStatus.textContent = '';
+
+            usernameStatus.className =
+                'small mt-1';
+
+            username.classList.remove(
+                'is-valid',
+                'is-invalid'
+            );
         }
-        
-        // Validate password length
-        if (passwordInput.value.length < 6) {
-            showAlert('Password must be at least 6 characters long', 'danger');
-            return;
+
+
+        function showUsernameChecking() {
+
+            usernameAvailable = false;
+
+            usernameStatus.style.display =
+                'block';
+
+            usernameStatus.textContent =
+                'Checking username...';
+
+            usernameStatus.className =
+                'small mt-1 text-muted';
+
+            username.classList.remove(
+                'is-valid',
+                'is-invalid'
+            );
         }
-        
-        const formData = new FormData(registerForm);
-        registrationData = {
-            first_name: formData.get('first_name'),
-            last_name: formData.get('last_name'),
-            email: formData.get('email').toLowerCase().trim(),
-            username: formData.get('username'),
-            password: formData.get('password')
-        };
-        
-        // Show loading state
-        registerBtn.disabled = true;
-        registerBtnText.textContent = 'Sending Verification Code...';
-        registerSpinner.classList.remove('d-none');
-        
-        try {
-            // Send OTP
-            const response = await fetch('/api/auth/send-otp', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email: registrationData.email })
-            });
-            
-            const data = await response.json();
-            
-            if (response.ok) {
-                // Show OTP form
-                document.getElementById('otpEmail').textContent = registrationData.email;
-                registerForm.classList.add('d-none');
-                otpForm.classList.remove('d-none');
-                
-                // Check if OTP is in response (for development when email is not configured)
-                if (data.otp_code) {
-                    showAlert('Verification code sent! OTP: ' + data.otp_code, 'success');
-                    console.log('OTP Code:', data.otp_code);
-                } else {
-                    showAlert('Verification code sent to your email!', 'success');
+
+
+        function showUsernameSuccess(message) {
+
+            usernameAvailable = true;
+
+            usernameStatus.style.display =
+                'block';
+
+            usernameStatus.textContent =
+                '✓ ' + (
+                    message ||
+                    'Username is available'
+                );
+
+            usernameStatus.className =
+                'small mt-1 text-success';
+
+            username.classList.remove(
+                'is-invalid'
+            );
+
+            username.classList.add(
+                'is-valid'
+            );
+        }
+
+
+        function showUsernameError(message) {
+
+            usernameAvailable = false;
+
+            usernameStatus.style.display =
+                'block';
+
+            usernameStatus.textContent =
+                '✕ ' + (
+                    message ||
+                    'Username already taken'
+                );
+
+            usernameStatus.className =
+                'small mt-1 text-danger';
+
+            username.classList.remove(
+                'is-valid'
+            );
+
+            username.classList.add(
+                'is-invalid'
+            );
+        }
+
+
+        async function checkUsernameAvailability() {
+
+            const value =
+                username.value.trim();
+
+            const emailValue =
+                email.value.trim().toLowerCase();
+
+
+            if (!value) {
+
+                resetUsernameStatus();
+
+                return;
+            }
+
+
+            if (value.length < 3) {
+
+                showUsernameError(
+                    'Username must be at least 3 characters.'
+                );
+
+                return;
+            }
+
+
+            if (value.length > 80) {
+
+                showUsernameError(
+                    'Username cannot exceed 80 characters.'
+                );
+
+                return;
+            }
+
+
+            if (!/^[A-Za-z0-9_.-]+$/.test(value)) {
+
+                showUsernameError(
+                    'Only letters, numbers, underscore, dot and hyphen are allowed.'
+                );
+
+                return;
+            }
+
+
+            if (usernameCheckController) {
+                usernameCheckController.abort();
+            }
+
+            usernameCheckController =
+                new AbortController();
+
+            showUsernameChecking();
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        '/api/auth/check-username',
+                        {
+                            method: 'POST',
+
+                            headers: {
+                                'Content-Type':
+                                    'application/json'
+                            },
+
+                            body: JSON.stringify({
+                                username: value,
+                                email: emailValue
+                            }),
+
+                            signal:
+                                usernameCheckController.signal
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    showUsernameError(
+                        data.message ||
+                        'Unable to check username.'
+                    );
+
+                    return;
                 }
-            } else {
-                showAlert(data.error || 'Failed to send verification code', 'danger');
-            }
-        } catch (error) {
-            showAlert('Network error. Please try again.', 'danger');
-        } finally {
-            registerBtn.disabled = false;
-            registerBtnText.textContent = 'Create Account';
-            registerSpinner.classList.add('d-none');
-        }
-    });
-    
-    // Handle OTP verification
-    otpForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const otpCode = document.getElementById('otpCode').value;
-        
-        if (otpCode.length !== 6 || !/^\d{6}$/.test(otpCode)) {
-            showAlert('Please enter a valid 6-digit code', 'danger');
-            return;
-        }
-        
-        // Show loading state
-        verifyBtn.disabled = true;
-        verifyBtnText.textContent = 'Verifying...';
-        verifySpinner.classList.remove('d-none');
-        
-        try {
-            // First verify OTP
-            const verifyResponse = await fetch('/api/auth/verify-otp', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email: registrationData.email,
-                    otp_code: otpCode,
-                    user_data: registrationData
-                })
-            });
-            
-            const verifyData = await verifyResponse.json();
-            
-            if (verifyResponse.ok) {
-                showAlert('Account created successfully! Redirecting to login...', 'success');
-                setTimeout(() => {
-                    window.location.href = '/login';
-                }, 2000);
-            } else {
-                showAlert(verifyData.error || 'Verification failed', 'danger');
-            }
-        } catch (error) {
-            showAlert('Network error. Please try again.', 'danger');
-        } finally {
-            verifyBtn.disabled = false;
-            verifyBtnText.textContent = 'Verify Email';
-            verifySpinner.classList.add('d-none');
-        }
-    });
-    
-    // Handle resend OTP
-    resendOtpBtn.addEventListener('click', async function() {
-        resendOtpBtn.disabled = true;
-        resendOtpBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Sending...';
-        
-        try {
-            const response = await fetch('/api/auth/resend-otp', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email: registrationData.email })
-            });
-            
-            const data = await response.json();
-            
-            if (response.ok) {
-                // Check if OTP is in response (for development when email is not configured)
-                if (data.otp_code) {
-                    showAlert('Verification code resent! OTP: ' + data.otp_code, 'success');
-                    console.log('OTP Code:', data.otp_code);
+
+
+                if (data.available) {
+
+                    showUsernameSuccess(
+                        data.message
+                    );
+
                 } else {
-                    showAlert('Verification code resent!', 'success');
+
+                    showUsernameError(
+                        data.message ||
+                        'Username already taken'
+                    );
+
                 }
-            } else {
-                showAlert(data.error || 'Failed to resend code', 'danger');
+
+            } catch (error) {
+
+                if (error.name === 'AbortError') {
+                    return;
+                }
+
+                console.error(
+                    'Username check error:',
+                    error
+                );
+
+                showUsernameError(
+                    'Unable to check username. Please try again.'
+                );
+
             }
-        } catch (error) {
-            showAlert('Network error. Please try again.', 'danger');
-        } finally {
-            resendOtpBtn.disabled = false;
-            resendOtpBtn.innerHTML = '<i class="fas fa-redo me-1"></i>Resend Code';
+
         }
-    });
-    
-    // Handle back to registration
-    backToRegister.addEventListener('click', function() {
-        otpForm.classList.add('d-none');
-        registerForm.classList.remove('d-none');
-        document.getElementById('otpCode').value = '';
-    });
-    
-    // Helper function to show alerts
-    function showAlert(message, type) {
-        const alertContainer = document.getElementById('alertContainer');
-        const alert = document.createElement('div');
-        alert.className = `alert alert-${type} alert-dismissible fade show`;
-        alert.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        alertContainer.innerHTML = '';
-        alertContainer.appendChild(alert);
-        
-        // Auto-dismiss after 5 seconds
-        setTimeout(() => {
-            if (alert.parentNode) {
-                alert.remove();
+
+
+        username.addEventListener(
+            'input',
+            function () {
+
+                usernameAvailable = false;
+
+                clearTimeout(
+                    usernameCheckTimer
+                );
+
+                const value =
+                    username.value.trim();
+
+                if (!value) {
+
+                    resetUsernameStatus();
+
+                    return;
+                }
+
+                usernameCheckTimer =
+                    setTimeout(
+                        checkUsernameAvailability,
+                        400
+                    );
+
             }
-        }, 5000);
+        );
+
+
+        email.addEventListener(
+            'input',
+            function () {
+
+                if (username.value.trim()) {
+
+                    clearTimeout(
+                        usernameCheckTimer
+                    );
+
+                    usernameCheckTimer =
+                        setTimeout(
+                            checkUsernameAvailability,
+                            400
+                        );
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           PASSWORD VISIBILITY
+        ===================================================== */
+
+        togglePassword.addEventListener(
+            'click',
+            function () {
+
+                const type =
+                    password.getAttribute('type') === 'password'
+                        ? 'text'
+                        : 'password';
+
+                password.setAttribute(
+                    'type',
+                    type
+                );
+
+                confirmPassword.setAttribute(
+                    'type',
+                    type
+                );
+
+                const icon =
+                    this.querySelector('i');
+
+                icon.classList.toggle(
+                    'fa-eye'
+                );
+
+                icon.classList.toggle(
+                    'fa-eye-slash'
+                );
+
+            }
+        );
+
+
+        /* =====================================================
+           SEND OTP
+        ===================================================== */
+
+        registerForm.addEventListener(
+            'submit',
+            async function (event) {
+
+                event.preventDefault();
+
+
+                /* Username availability */
+
+                const currentUsername =
+                    username.value.trim();
+
+                if (!currentUsername) {
+
+                    showAlert(
+                        'Username is required.',
+                        'danger'
+                    );
+
+                    username.focus();
+
+                    return;
+                }
+
+
+                if (!usernameAvailable) {
+
+                    await checkUsernameAvailability();
+
+                    if (!usernameAvailable) {
+
+                        showAlert(
+                            'Please choose an available username before continuing.',
+                            'danger'
+                        );
+
+                        username.focus();
+
+                        return;
+                    }
+
+                }
+
+
+                /* Password match */
+
+                if (
+                    password.value !==
+                    confirmPassword.value
+                ) {
+
+                    showAlert(
+                        'Passwords do not match.',
+                        'danger'
+                    );
+
+                    return;
+
+                }
+
+
+                /* Password length */
+
+                if (
+                    password.value.length < 6
+                ) {
+
+                    showAlert(
+                        'Password must be at least 6 characters long.',
+                        'danger'
+                    );
+
+                    return;
+
+                }
+
+
+                /* Save registration data */
+
+                registrationData = {
+
+                    first_name:
+                        firstName.value.trim(),
+
+                    last_name:
+                        lastName.value.trim(),
+
+                    email:
+                        email.value.trim().toLowerCase(),
+
+                    username:
+                        username.value.trim(),
+
+                    password:
+                        password.value
+
+                };
+
+
+                /* Loading */
+
+                sendOtpBtn.disabled = true;
+
+                sendOtpText.textContent =
+                    'Sending OTP...';
+
+                sendOtpSpinner.classList.remove(
+                    'd-none'
+                );
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            '/api/auth/send-otp',
+                            {
+                                method: 'POST',
+
+                                headers: {
+                                    'Content-Type':
+                                        'application/json'
+                                },
+
+                                body: JSON.stringify({
+                                    email:
+                                        registrationData.email
+                                })
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        showAlert(
+                            data.error ||
+                            'Unable to send OTP.',
+                            'danger'
+                        );
+
+                        return;
+
+                    }
+
+
+                    /* Show OTP screen */
+
+                    otpEmail.textContent =
+                        registrationData.email;
+
+                    registrationStep.classList.add(
+                        'd-none'
+                    );
+
+                    otpStep.classList.remove(
+                        'd-none'
+                    );
+
+                    otpCode.value = '';
+
+                    otpCode.focus();
+
+
+                    showAlert(
+                        'Verification OTP has been sent to your email.',
+                        'success'
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        'Send OTP error:',
+                        error
+                    );
+
+                    showAlert(
+                        'Unable to send verification email. Please try again.',
+                        'danger'
+                    );
+
+
+                } finally {
+
+                    sendOtpBtn.disabled = false;
+
+                    sendOtpText.textContent =
+                        'Send OTP';
+
+                    sendOtpSpinner.classList.add(
+                        'd-none'
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           OTP ONLY NUMBERS
+        ===================================================== */
+
+        otpCode.addEventListener(
+            'input',
+            function () {
+
+                this.value =
+                    this.value
+                        .replace(/\D/g, '')
+                        .slice(0, 6);
+
+            }
+        );
+
+
+        /* =====================================================
+           VERIFY OTP + REGISTER
+        ===================================================== */
+
+        otpForm.addEventListener(
+            'submit',
+            async function (event) {
+
+                event.preventDefault();
+
+
+                const code =
+                    otpCode.value.trim();
+
+
+                if (!/^\d{6}$/.test(code)) {
+
+                    showAlert(
+                        'Please enter a valid 6-digit OTP.',
+                        'danger'
+                    );
+
+                    return;
+
+                }
+
+
+                if (!registrationData) {
+
+                    showAlert(
+                        'Registration details are missing. Please start again.',
+                        'danger'
+                    );
+
+                    return;
+
+                }
+
+
+                /* Loading */
+
+                verifyOtpBtn.disabled = true;
+
+                verifyOtpText.textContent =
+                    'Verifying...';
+
+                verifyOtpSpinner.classList.remove(
+                    'd-none'
+                );
+
+
+                try {
+
+                    /* -----------------------------------------
+                       VERIFY OTP
+                    ----------------------------------------- */
+
+                    const verifyResponse =
+                        await fetch(
+                            '/api/auth/verify-otp',
+                            {
+                                method: 'POST',
+
+                                headers: {
+                                    'Content-Type':
+                                        'application/json'
+                                },
+
+                                body: JSON.stringify({
+                                    email:
+                                        registrationData.email,
+
+                                    otp_code:
+                                        code
+                                })
+                            }
+                        );
+
+
+                    const verifyData =
+                        await verifyResponse.json();
+
+
+                    if (!verifyResponse.ok) {
+
+                        showAlert(
+                            verifyData.error ||
+                            'Invalid or expired OTP.',
+                            'danger'
+                        );
+
+                        return;
+
+                    }
+
+
+                    /* -----------------------------------------
+                       REGISTER ACCOUNT
+                    ----------------------------------------- */
+
+                    const registerResponse =
+                        await fetch(
+                            '/api/auth/register-with-otp',
+                            {
+                                method: 'POST',
+
+                                headers: {
+                                    'Content-Type':
+                                        'application/json'
+                                },
+
+                                body: JSON.stringify({
+                                    ...registrationData,
+                                    otp_code: code
+                                })
+                            }
+                        );
+
+
+                    const registerData =
+                        await registerResponse.json();
+
+
+                    if (!registerResponse.ok) {
+
+                        showAlert(
+                            registerData.error ||
+                            'Unable to create account.',
+                            'danger'
+                        );
+
+                        return;
+
+                    }
+
+
+                    /* -----------------------------------------
+                       SUCCESS
+                    ----------------------------------------- */
+
+                    showAlert(
+                        'Account created successfully! Redirecting to login...',
+                        'success'
+                    );
+
+
+                    setTimeout(
+                        function () {
+
+                            window.location.href =
+                                '/login';
+
+                        },
+                        1500
+                    );
+
+
+                } catch (error) {
+
+                    console.error(
+                        'OTP verification error:',
+                        error
+                    );
+
+                    showAlert(
+                        'Something went wrong. Please try again.',
+                        'danger'
+                    );
+
+
+                } finally {
+
+                    verifyOtpBtn.disabled = false;
+
+                    verifyOtpText.textContent =
+                        'Verify OTP';
+
+                    verifyOtpSpinner.classList.add(
+                        'd-none'
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           RESEND OTP
+        ===================================================== */
+
+        resendOtpBtn.addEventListener(
+            'click',
+            async function () {
+
+                if (!registrationData) {
+
+                    showAlert(
+                        'Registration details are missing.',
+                        'danger'
+                    );
+
+                    return;
+
+                }
+
+
+                resendOtpBtn.disabled = true;
+
+                resendOtpBtn.innerHTML =
+                    '<span class="spinner-border spinner-border-sm me-2"></span>Sending...';
+
+
+                try {
+
+                    const response =
+                        await fetch(
+                            '/api/auth/resend-otp',
+                            {
+                                method: 'POST',
+
+                                headers: {
+                                    'Content-Type':
+                                        'application/json'
+                                },
+
+                                body: JSON.stringify({
+                                    email:
+                                        registrationData.email
+                                })
+                            }
+                        );
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!response.ok) {
+
+                        showAlert(
+                            data.error ||
+                            'Unable to resend OTP.',
+                            'danger'
+                        );
+
+                        return;
+
+                    }
+
+
+                    showAlert(
+                        'A new OTP has been sent to your email.',
+                        'success'
+                    );
+
+
+                    otpCode.value = '';
+
+                    otpCode.focus();
+
+
+                } catch (error) {
+
+                    console.error(
+                        'Resend OTP error:',
+                        error
+                    );
+
+                    showAlert(
+                        'Unable to resend OTP. Please try again.',
+                        'danger'
+                    );
+
+
+                } finally {
+
+                    resendOtpBtn.disabled = false;
+
+                    resendOtpBtn.innerHTML =
+                        '<i class="fas fa-redo me-1"></i> Resend OTP';
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           BACK TO REGISTRATION
+        ===================================================== */
+
+        backToRegistration.addEventListener(
+            'click',
+            function () {
+
+                otpStep.classList.add(
+                    'd-none'
+                );
+
+                registrationStep.classList.remove(
+                    'd-none'
+                );
+
+                otpCode.value = '';
+
+            }
+        );
+
+
+        /* =====================================================
+           ALERT
+        ===================================================== */
+
+        function showAlert(
+            message,
+            type
+        ) {
+
+            const alertContainer =
+                document.getElementById(
+                    'alertContainer'
+                );
+
+
+            const alert =
+                document.createElement(
+                    'div'
+                );
+
+
+            alert.className =
+                `alert alert-${type} alert-dismissible fade show`;
+
+
+            alert.innerHTML = `
+
+                ${message}
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                ></button>
+
+            `;
+
+
+            alertContainer.innerHTML = '';
+
+            alertContainer.appendChild(
+                alert
+            );
+
+
+            setTimeout(
+                function () {
+
+                    if (alert.parentNode) {
+
+                        alert.remove();
+
+                    }
+
+                },
+                5000
+            );
+
+        }
+
     }
-});
+);
+
 </script>
+
 {% endblock %}

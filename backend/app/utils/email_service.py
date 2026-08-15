@@ -1,153 +1,573 @@
 import smtplib
+import logging
+
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.utils import formataddr
+
 from flask import current_app
-import logging
+
 
 logger = logging.getLogger(__name__)
 
+
 class EmailService:
+
     def __init__(self):
-        self.smtp_server = current_app.config.get('MAIL_SERVER')
-        self.smtp_port = current_app.config.get('MAIL_PORT')
-        self.use_tls = current_app.config.get('MAIL_USE_TLS')
-        self.username = current_app.config.get('MAIL_USERNAME')
-        self.password = current_app.config.get('MAIL_PASSWORD')
-        self.default_sender = current_app.config.get('MAIL_DEFAULT_SENDER')
-    
-    def send_otp_email(self, to_email, otp_code, purpose='registration'):
-        """Send OTP email to user"""
-        try:
-            if not self.username or not self.password:
-                logger.warning("Email credentials not configured. OTP will be logged instead.")
-                logger.info(f"OTP for {to_email}: {otp_code}")
-                return True
-            
-            # Create message
-            msg = MIMEMultipart()
-            msg['From'] = self.default_sender
-            msg['To'] = to_email
-            msg['Subject'] = f"E-Waste Management - {purpose.title()} Verification Code"
-            
-            # Email body
-            if purpose == 'registration':
-                body = f"""
-                <html>
-                <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-                    <div style="background-color: #f8f9fa; padding: 30px; border-radius: 10px; text-align: center;">
-                        <h2 style="color: #28a745; margin-bottom: 20px;">🌱 E-Waste Management System</h2>
-                        <h3 style="color: #333; margin-bottom: 20px;">Email Verification</h3>
-                        <p style="color: #666; font-size: 16px; margin-bottom: 30px;">
-                            Thank you for registering! Please use the following verification code to complete your account setup:
-                        </p>
-                        <div style="background-color: #fff; padding: 20px; border-radius: 8px; border: 2px solid #28a745; margin: 20px 0;">
-                            <h1 style="color: #28a745; font-size: 32px; margin: 0; letter-spacing: 5px;">{otp_code}</h1>
-                        </div>
-                        <p style="color: #666; font-size: 14px; margin-top: 20px;">
-                            This code will expire in 10 minutes. If you didn't request this code, please ignore this email.
-                        </p>
-                        <hr style="border: none; border-top: 1px solid #eee; margin: 30px 0;">
-                        <p style="color: #999; font-size: 12px;">
-                            This is an automated message from E-Waste Management System. Please do not reply to this email.
-                        </p>
-                    </div>
-                </body>
-                </html>
-                """
-            else:
-                body = f"""
-                <html>
-                <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-                    <div style="background-color: #f8f9fa; padding: 30px; border-radius: 10px; text-align: center;">
-                        <h2 style="color: #28a745; margin-bottom: 20px;">🌱 E-Waste Management System</h2>
-                        <h3 style="color: #333; margin-bottom: 20px;">Verification Code</h3>
-                        <p style="color: #666; font-size: 16px; margin-bottom: 30px;">
-                            Please use the following verification code:
-                        </p>
-                        <div style="background-color: #fff; padding: 20px; border-radius: 8px; border: 2px solid #28a745; margin: 20px 0;">
-                            <h1 style="color: #28a745; font-size: 32px; margin: 0; letter-spacing: 5px;">{otp_code}</h1>
-                        </div>
-                        <p style="color: #666; font-size: 14px; margin-top: 20px;">
-                            This code will expire in 10 minutes.
-                        </p>
-                    </div>
-                </body>
-                </html>
-                """
-            
-            msg.attach(MIMEText(body, 'html'))
-            
-            # Send email
-            server = smtplib.SMTP(self.smtp_server, self.smtp_port)
-            if self.use_tls:
-                server.starttls()
-            server.login(self.username, self.password)
-            text = msg.as_string()
-            server.sendmail(self.default_sender, to_email, text)
-            server.quit()
-            
-            logger.info(f"OTP email sent successfully to {to_email}")
-            return True
-            
-        except Exception as e:
-            logger.error(f"Failed to send OTP email to {to_email}: {str(e)}")
-            logger.info(f"OTP for {to_email}: {otp_code}")
+
+        self.smtp_server = (
+            current_app.config.get('MAIL_SERVER')
+            or 'smtp.gmail.com'
+        )
+
+        self.smtp_port = int(
+            current_app.config.get('MAIL_PORT')
+            or 587
+        )
+
+        self.use_tls = current_app.config.get(
+            'MAIL_USE_TLS',
+            True
+        )
+
+        self.username = current_app.config.get(
+            'MAIL_USERNAME'
+        )
+
+        self.password = current_app.config.get(
+            'MAIL_PASSWORD'
+        )
+
+        if self.password:
+            self.password = (
+                self.password
+                .replace(' ', '')
+                .strip()
+            )
+
+        self.default_sender = (
+            current_app.config.get(
+                'MAIL_DEFAULT_SENDER'
+            )
+            or self.username
+        )
+
+
+    # ============================================================
+    # VALIDATE CONFIGURATION
+    # ============================================================
+
+    def _validate_config(self):
+
+        missing = []
+
+        if not self.smtp_server:
+            missing.append('MAIL_SERVER')
+
+        if not self.smtp_port:
+            missing.append('MAIL_PORT')
+
+        if not self.username:
+            missing.append('MAIL_USERNAME')
+
+        if not self.password:
+            missing.append('MAIL_PASSWORD')
+
+        if not self.default_sender:
+            missing.append('MAIL_DEFAULT_SENDER')
+
+        if missing:
+
+            logger.error(
+                "Missing email configuration: %s",
+                ", ".join(missing)
+            )
+
             return False
-    
-    def send_welcome_email(self, to_email, username):
-        """Send welcome email after successful registration"""
+
+        return True
+
+
+    # ============================================================
+    # CONNECT TO GMAIL
+    # ============================================================
+
+    def _connect(self):
+
+        server = smtplib.SMTP(
+            self.smtp_server,
+            self.smtp_port,
+            timeout=30
+        )
+
+        server.ehlo()
+
+        if self.use_tls:
+
+            server.starttls()
+
+            server.ehlo()
+
+        server.login(
+            self.username,
+            self.password
+        )
+
+        return server
+
+
+    # ============================================================
+    # SEND EMAIL
+    # ============================================================
+
+    def _send_email(
+        self,
+        to_email,
+        subject,
+        text_body,
+        html_body
+    ):
+
+        server = None
+
         try:
-            if not self.username or not self.password:
-                logger.info(f"Welcome email would be sent to {to_email} for user {username}")
-                return True
-            
-            msg = MIMEMultipart()
-            msg['From'] = self.default_sender
-            msg['To'] = to_email
-            msg['Subject'] = "Welcome to E-Waste Management System!"
-            
-            body = f"""
-            <html>
-            <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-                <div style="background-color: #f8f9fa; padding: 30px; border-radius: 10px;">
-                    <h2 style="color: #28a745; margin-bottom: 20px; text-align: center;">🌱 Welcome to E-Waste Management!</h2>
-                    <p style="color: #333; font-size: 16px; margin-bottom: 20px;">
-                        Hi {username},
-                    </p>
-                    <p style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
-                        Welcome to our E-Waste Management System! Your account has been successfully verified and activated.
-                    </p>
-                    <div style="background-color: #e8f5e8; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                        <h3 style="color: #28a745; margin-top: 0;">What you can do now:</h3>
-                        <ul style="color: #666; font-size: 14px;">
-                            <li>Add your e-waste items to track</li>
-                            <li>Schedule collection pickups</li>
-                            <li>Use our AI scanner to identify waste types</li>
-                            <li>Connect with the community</li>
-                            <li>Track your environmental impact</li>
-                        </ul>
-                    </div>
-                    <p style="color: #666; font-size: 14px; text-align: center; margin-top: 30px;">
-                        Start your eco-friendly journey today! 🌱♻️
-                    </p>
-                </div>
-            </body>
-            </html>
-            """
-            
-            msg.attach(MIMEText(body, 'html'))
-            
-            server = smtplib.SMTP(self.smtp_server, self.smtp_port)
-            if self.use_tls:
-                server.starttls()
-            server.login(self.username, self.password)
-            text = msg.as_string()
-            server.sendmail(self.default_sender, to_email, text)
-            server.quit()
-            
-            logger.info(f"Welcome email sent successfully to {to_email}")
+
+            if not self._validate_config():
+
+                return False
+
+
+            # ----------------------------------------------------
+            # CREATE MESSAGE
+            # ----------------------------------------------------
+
+            message = MIMEMultipart(
+                'alternative'
+            )
+
+            message['From'] = formataddr(
+                (
+                    'E-Waste Management System',
+                    self.default_sender
+                )
+            )
+
+            message['To'] = to_email
+
+            message['Subject'] = subject
+
+
+            # ----------------------------------------------------
+            # ATTACH TEXT + HTML
+            # ----------------------------------------------------
+
+            message.attach(
+                MIMEText(
+                    text_body,
+                    'plain',
+                    'utf-8'
+                )
+            )
+
+            message.attach(
+                MIMEText(
+                    html_body,
+                    'html',
+                    'utf-8'
+                )
+            )
+
+
+            # ----------------------------------------------------
+            # CONNECT
+            # ----------------------------------------------------
+
+            logger.info(
+                "Connecting to Gmail SMTP server %s:%s",
+                self.smtp_server,
+                self.smtp_port
+            )
+
+            server = self._connect()
+
+
+            # ----------------------------------------------------
+            # SEND
+            # ----------------------------------------------------
+
+            server.sendmail(
+                self.default_sender,
+                [to_email],
+                message.as_string()
+            )
+
+
+            logger.info(
+                "Email successfully sent to %s",
+                to_email
+            )
+
             return True
-            
-        except Exception as e:
-            logger.error(f"Failed to send welcome email to {to_email}: {str(e)}")
+
+
+        except smtplib.SMTPAuthenticationError:
+
+            logger.error(
+                "Gmail authentication failed. "
+                "Make sure MAIL_PASSWORD contains "
+                "the Google App Password."
+            )
+
             return False
+
+
+        except smtplib.SMTPConnectError:
+
+            logger.error(
+                "Could not connect to Gmail SMTP server."
+            )
+
+            return False
+
+
+        except smtplib.SMTPException as e:
+
+            logger.error(
+                "Gmail SMTP error: %s",
+                str(e)
+            )
+
+            return False
+
+
+        except Exception as e:
+
+            logger.exception(
+                "Email sending error: %s",
+                str(e)
+            )
+
+            return False
+
+
+        finally:
+
+            if server:
+
+                try:
+                    server.quit()
+
+                except Exception:
+                    pass
+
+
+    # ============================================================
+    # SEND OTP EMAIL
+    # ============================================================
+
+    def send_otp_email(
+        self,
+        to_email,
+        otp_code,
+        purpose='registration'
+    ):
+
+        subject = (
+            'E-Waste Management System - '
+            f'{purpose.title()} Verification Code'
+        )
+
+
+        text_body = f"""
+E-Waste Management System
+
+Your verification code is:
+
+{otp_code}
+
+This verification code will expire in 10 minutes.
+
+If you did not request this code, please ignore this email.
+
+Do not share this verification code with anyone.
+"""
+
+
+        html_body = f"""
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Email Verification</title>
+
+</head>
+
+
+<body
+    style="
+        margin:0;
+        padding:0;
+        background:#f4f7f5;
+        font-family:Arial,Helvetica,sans-serif;
+    "
+>
+
+    <div
+        style="
+            max-width:600px;
+            margin:40px auto;
+            background:#ffffff;
+            border-radius:12px;
+            overflow:hidden;
+        "
+    >
+
+        <div
+            style="
+                background:#28a745;
+                padding:25px;
+                text-align:center;
+            "
+        >
+
+            <h1
+                style="
+                    color:#ffffff;
+                    margin:0;
+                "
+            >
+                🌱 E-Waste Management
+            </h1>
+
+        </div>
+
+
+        <div
+            style="
+                padding:35px;
+                text-align:center;
+            "
+        >
+
+            <h2>
+                Email Verification
+            </h2>
+
+
+            <p
+                style="
+                    color:#666666;
+                    font-size:16px;
+                "
+            >
+                Your verification code is:
+            </p>
+
+
+            <div
+                style="
+                    margin:30px auto;
+                    padding:20px;
+                    max-width:250px;
+                    background:#f1fff5;
+                    border:2px solid #28a745;
+                    border-radius:10px;
+                "
+            >
+
+                <span
+                    style="
+                        color:#28a745;
+                        font-size:36px;
+                        font-weight:bold;
+                        letter-spacing:8px;
+                    "
+                >
+                    {otp_code}
+                </span>
+
+            </div>
+
+
+            <p
+                style="
+                    color:#666666;
+                    font-size:14px;
+                "
+            >
+                This code will expire in
+                <strong>10 minutes</strong>.
+            </p>
+
+
+            <p
+                style="
+                    color:#999999;
+                    font-size:13px;
+                "
+            >
+                If you did not request this code,
+                you can safely ignore this email.
+            </p>
+
+
+            <p
+                style="
+                    color:#dc3545;
+                    font-size:13px;
+                    font-weight:bold;
+                "
+            >
+                Never share your verification code
+                with anyone.
+            </p>
+
+        </div>
+
+
+        <div
+            style="
+                padding:20px;
+                background:#f8f9fa;
+                text-align:center;
+            "
+        >
+
+            <p
+                style="
+                    color:#999999;
+                    font-size:12px;
+                    margin:0;
+                "
+            >
+                This is an automated email from
+                E-Waste Management System.
+            </p>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
+"""
+
+
+        return self._send_email(
+            to_email,
+            subject,
+            text_body,
+            html_body
+        )
+
+
+    # ============================================================
+    # SEND WELCOME EMAIL
+    # ============================================================
+
+    def send_welcome_email(
+        self,
+        to_email,
+        username
+    ):
+
+        subject = (
+            'Welcome to E-Waste Management System!'
+        )
+
+
+        text_body = f"""
+Welcome to E-Waste Management System!
+
+Hi {username},
+
+Your account has been successfully
+verified and activated.
+
+You can now use the E-Waste Management System.
+
+🌱♻️
+"""
+
+
+        html_body = f"""
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Welcome</title>
+
+</head>
+
+
+<body
+    style="
+        font-family:Arial,Helvetica,sans-serif;
+        padding:30px;
+        background:#f4f7f5;
+    "
+>
+
+    <div
+        style="
+            max-width:600px;
+            margin:auto;
+            background:#ffffff;
+            padding:30px;
+            border-radius:12px;
+        "
+    >
+
+        <h2>
+            🌱 Welcome to E-Waste Management!
+        </h2>
+
+
+        <p>
+            Hi <strong>{username}</strong>,
+        </p>
+
+
+        <p>
+            Your account has been successfully
+            verified and activated.
+        </p>
+
+
+        <p>
+            You can now use the E-Waste Management System.
+        </p>
+
+
+        <p>
+            🌱♻️ Start your eco-friendly journey!
+        </p>
+
+    </div>
+
+</body>
+
+</html>
+"""
+
+
+        return self._send_email(
+            to_email,
+            subject,
+            text_body,
+            html_body
+        )

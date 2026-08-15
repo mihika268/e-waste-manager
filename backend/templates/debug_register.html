@@ -4,189 +4,571 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Button Debug</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        rel="stylesheet"
+    >
 </head>
+
 <body>
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Registration Button Debug Test</h3>
-                    </div>
-                    <div class="card-body">
-                        <!-- Test Form -->
-                        <form id="testRegisterForm">
-                            <div class="mb-3">
-                                <label for="testFirstName" class="form-label">First Name</label>
-                                <input type="text" class="form-control" id="testFirstName" name="first_name" value="Test" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="testLastName" class="form-label">Last Name</label>
-                                <input type="text" class="form-control" id="testLastName" name="last_name" value="User" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="testEmail" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="testEmail" name="email" value="debug@example.com" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="testUsername" class="form-label">Username</label>
-                                <input type="text" class="form-control" id="testUsername" name="username" value="debuguser" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="testPassword" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="testPassword" name="password" value="debugpass123" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="testConfirmPassword" class="form-label">Confirm Password</label>
-                                <input type="password" class="form-control" id="testConfirmPassword" name="confirm_password" value="debugpass123" required>
-                            </div>
-                            
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-success" id="testRegisterBtn">
-                                    <i class="fas fa-user-plus me-2"></i>
-                                    <span id="testRegisterBtnText">Test Create Account</span>
-                                    <div class="spinner-border spinner-border-sm ms-2 d-none" id="testRegisterSpinner"></div>
-                                </button>
-                            </div>
-                        </form>
-                        
-                        <!-- Debug Output -->
-                        <div class="mt-4">
-                            <h5>Debug Output:</h5>
-                            <div id="debugOutput" class="border p-3 bg-light" style="font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;">
-                                Ready to test...
-                            </div>
-                        </div>
-                        
-                        <!-- Test Results -->
-                        <div class="mt-4">
-                            <h5>Test Results:</h5>
-                            <div id="testResults" class="alert alert-info">
-                                Click the button to test registration...
-                            </div>
-                        </div>
-                    </div>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+
+            <div class="card">
+
+                <div class="card-header">
+                    <h3>Registration Button Debug Test</h3>
                 </div>
+
+                <div class="card-body">
+
+                    <!-- Test Form -->
+                    <form id="testRegisterForm">
+
+                        <div class="mb-3">
+                            <label for="testFirstName" class="form-label">
+                                First Name
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="testFirstName"
+                                name="first_name"
+                                value="Test"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="testLastName" class="form-label">
+                                Last Name
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="testLastName"
+                                name="last_name"
+                                value="User"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="testEmail" class="form-label">
+                                Email
+                            </label>
+
+                            <input
+                                type="email"
+                                class="form-control"
+                                id="testEmail"
+                                name="email"
+                                value="debug@example.com"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="testUsername" class="form-label">
+                                Username
+                            </label>
+
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="testUsername"
+                                name="username"
+                                value="debuguser"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="testPassword" class="form-label">
+                                Password
+                            </label>
+
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="testPassword"
+                                name="password"
+                                value="debugpass123"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label for="testConfirmPassword" class="form-label">
+                                Confirm Password
+                            </label>
+
+                            <input
+                                type="password"
+                                class="form-control"
+                                id="testConfirmPassword"
+                                name="confirm_password"
+                                value="debugpass123"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="d-grid">
+                            <button
+                                type="submit"
+                                class="btn btn-success"
+                                id="testRegisterBtn"
+                            >
+                                <i class="fas fa-user-plus me-2"></i>
+
+                                <span id="testRegisterBtnText">
+                                    Test Create Account
+                                </span>
+
+                                <div
+                                    class="spinner-border spinner-border-sm ms-2 d-none"
+                                    id="testRegisterSpinner"
+                                ></div>
+                            </button>
+                        </div>
+
+                    </form>
+
+
+                    <!-- Debug Output -->
+                    <div class="mt-4">
+
+                        <h5>Debug Output:</h5>
+
+                        <div
+                            id="debugOutput"
+                            class="border p-3 bg-light"
+                            style="
+                                font-family: monospace;
+                                font-size: 12px;
+                                max-height: 200px;
+                                overflow-y: auto;
+                            "
+                        >
+                            Ready to test...
+                        </div>
+
+                    </div>
+
+
+                    <!-- Test Results -->
+                    <div class="mt-4">
+
+                        <h5>Test Results:</h5>
+
+                        <div
+                            id="testResults"
+                            class="alert alert-info"
+                        >
+                            Click the button to test registration...
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
+
         </div>
     </div>
+</div>
 
-    <script>
-        // Debug logging function
-        function log(message) {
-            const debugOutput = document.getElementById('debugOutput');
-            const timestamp = new Date().toLocaleTimeString();
-            debugOutput.innerHTML += `[${timestamp}] ${message}<br>`;
-            debugOutput.scrollTop = debugOutput.scrollHeight;
-            console.log(`[Debug] ${message}`);
-        }
 
-        // Test form submission
-        document.getElementById('testRegisterForm').addEventListener('submit', async function(e) {
+<script>
+
+    // ============================================================
+    // DEBUG LOGGING
+    // ============================================================
+
+    function log(message) {
+
+        const debugOutput =
+            document.getElementById('debugOutput');
+
+        const timestamp =
+            new Date().toLocaleTimeString();
+
+        debugOutput.innerHTML +=
+            `[${timestamp}] ${message}<br>`;
+
+        debugOutput.scrollTop =
+            debugOutput.scrollHeight;
+
+        console.log(`[Debug] ${message}`);
+    }
+
+
+    // ============================================================
+    // FORM SUBMISSION
+    // ============================================================
+
+    document
+        .getElementById('testRegisterForm')
+        .addEventListener('submit', async function (e) {
+
             e.preventDefault();
-            
+
             log('=== FORM SUBMISSION STARTED ===');
-            
-            const testResults = document.getElementById('testResults');
-            const registerBtn = document.getElementById('testRegisterBtn');
-            const registerBtnText = document.getElementById('testRegisterBtnText');
-            const registerSpinner = document.getElementById('testRegisterSpinner');
-            
+
+
+            // ----------------------------------------------------
+            // Get UI elements
+            // ----------------------------------------------------
+
+            const testResults =
+                document.getElementById('testResults');
+
+            const registerBtn =
+                document.getElementById('testRegisterBtn');
+
+            const registerBtnText =
+                document.getElementById('testRegisterBtnText');
+
+            const registerSpinner =
+                document.getElementById('testRegisterSpinner');
+
+
+            // ----------------------------------------------------
             // Get form data
-            const formData = new FormData(this);
+            // ----------------------------------------------------
+
+            const formData =
+                new FormData(this);
+
             const registrationData = {
-                first_name: formData.get('first_name'),
-                last_name: formData.get('last_name'),
-                email: formData.get('email').toLowerCase().trim(),
-                username: formData.get('username'),
-                password: formData.get('password')
+
+                first_name:
+                    formData.get('first_name'),
+
+                last_name:
+                    formData.get('last_name'),
+
+                email:
+                    formData
+                        .get('email')
+                        .toLowerCase()
+                        .trim(),
+
+                username:
+                    formData.get('username'),
+
+                password:
+                    formData.get('password')
             };
-            
-            log(`Form data collected: ${JSON.stringify(registrationData)}`);
-            
+
+
+            // IMPORTANT:
+            // Do not log the password.
+
+            log(
+                `Form data collected for email: ${registrationData.email}`
+            );
+
+
+            // ----------------------------------------------------
             // Validate passwords
-            if (registrationData.password !== formData.get('confirm_password')) {
+            // ----------------------------------------------------
+
+            if (
+                registrationData.password !==
+                formData.get('confirm_password')
+            ) {
+
                 log('❌ Passwords do not match');
-                testResults.className = 'alert alert-danger';
-                testResults.textContent = 'Passwords do not match';
+
+                testResults.className =
+                    'alert alert-danger';
+
+                testResults.textContent =
+                    'Passwords do not match';
+
                 return;
             }
-            
-            if (registrationData.password.length < 6) {
+
+
+            // ----------------------------------------------------
+            // Validate password length
+            // ----------------------------------------------------
+
+            if (
+                registrationData.password.length < 6
+            ) {
+
                 log('❌ Password too short');
-                testResults.className = 'alert alert-danger';
-                testResults.textContent = 'Password must be at least 6 characters';
+
+                testResults.className =
+                    'alert alert-danger';
+
+                testResults.textContent =
+                    'Password must be at least 6 characters';
+
                 return;
             }
-            
+
+
             log('✅ Validation passed');
-            
+
+
+            // ----------------------------------------------------
             // Show loading state
+            // ----------------------------------------------------
+
             registerBtn.disabled = true;
-            registerBtnText.textContent = 'Sending Verification Code...';
+
+            registerBtnText.textContent =
+                'Sending Verification Code...';
+
             registerSpinner.classList.remove('d-none');
-            
+
             log('Loading state activated');
-            
+
+
+            // ----------------------------------------------------
+            // Send OTP request
+            // ----------------------------------------------------
+
             try {
+
                 log('Sending OTP request...');
-                
-                const response = await fetch('/api/auth/send-otp', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email: registrationData.email })
-                });
-                
-                log(`Response status: ${response.status}`);
-                
-                const data = await response.json();
-                log(`Response data: ${JSON.stringify(data)}`);
-                
+
+
+                const response = await fetch(
+                    '/api/auth/send-otp',
+                    {
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type':
+                                'application/json'
+                        },
+
+                        body: JSON.stringify({
+                            email:
+                                registrationData.email
+                        })
+                    }
+                );
+
+
+                log(
+                    `Response status: ${response.status}`
+                );
+
+
+                const data =
+                    await response.json();
+
+
+                // ------------------------------------------------
+                // SECURITY:
+                // Do NOT print the complete API response.
+                //
+                // The backend may currently contain otp_code
+                // in the response for development.
+                // ------------------------------------------------
+
+                log(
+                    `Response received successfully`
+                );
+
+
+                // ------------------------------------------------
+                // Successful response
+                // ------------------------------------------------
+
                 if (response.ok) {
-                    log('✅ OTP sent successfully!');
-                    testResults.className = 'alert alert-success';
+
+                    log(
+                        '✅ OTP request completed successfully'
+                    );
+
+
+                    testResults.className =
+                        'alert alert-success';
+
+
                     testResults.innerHTML = `
-                        <strong>Success!</strong><br>
-                        OTP Code: ${data.otp_code}<br>
-                        Expires at: ${data.expires_at}<br>
-                        <small>Check server logs for email details</small>
+                        <strong>
+                            Verification code sent successfully!
+                        </strong>
+                        <br><br>
+
+                        A 6-digit verification code has been
+                        sent to:
+                        <br>
+
+                        <strong>
+                            ${escapeHtml(registrationData.email)}
+                        </strong>
+
+                        <br><br>
+
+                        <small>
+                            Please check your inbox and enter
+                            the verification code.
+                        </small>
+
+                        <br><br>
+
+                        <small>
+                            If you don't receive the email,
+                            check your spam/junk folder.
+                        </small>
                     `;
-                } else {
-                    log(`❌ OTP sending failed: ${data.error || 'Unknown error'}`);
-                    testResults.className = 'alert alert-danger';
-                    testResults.textContent = `Failed: ${data.error || 'Unknown error'}`;
+
                 }
-                
+
+
+                // ------------------------------------------------
+                // Failed response
+                // ------------------------------------------------
+
+                else {
+
+                    const errorMessage =
+                        data.error ||
+                        data.message ||
+                        'Unable to send verification code';
+
+
+                    log(
+                        `❌ OTP sending failed: ${errorMessage}`
+                    );
+
+
+                    testResults.className =
+                        'alert alert-danger';
+
+
+                    testResults.textContent =
+                        `Failed: ${errorMessage}`;
+                }
+
+
             } catch (error) {
-                log(`❌ Network error: ${error.message}`);
-                testResults.className = 'alert alert-danger';
-                testResults.textContent = `Network error: ${error.message}`;
-            } finally {
-                // Reset button state
-                registerBtn.disabled = false;
-                registerBtnText.textContent = 'Test Create Account';
-                registerSpinner.classList.add('d-none');
-                log('Button state reset');
+
+                // ------------------------------------------------
+                // Network error
+                // ------------------------------------------------
+
+                log(
+                    `❌ Network error: ${error.message}`
+                );
+
+
+                testResults.className =
+                    'alert alert-danger';
+
+
+                testResults.textContent =
+                    `Network error: ${error.message}`;
             }
-            
-            log('=== FORM SUBMISSION COMPLETED ===');
+
+
+            // ----------------------------------------------------
+            // Reset button
+            // ----------------------------------------------------
+
+            finally {
+
+                registerBtn.disabled = false;
+
+                registerBtnText.textContent =
+                    'Test Create Account';
+
+                registerSpinner.classList.add('d-none');
+
+                log(
+                    'Button state reset'
+                );
+            }
+
+
+            log(
+                '=== FORM SUBMISSION COMPLETED ==='
+            );
+
         });
 
-        // Initial test
-        log('Debug page loaded successfully');
-        log('Button elements found:');
-        log(`- Register button: ${document.getElementById('testRegisterBtn') ? '✅ Found' : '❌ Missing'}`);
-        log(`- Button text: ${document.getElementById('testRegisterBtnText') ? '✅ Found' : '❌ Missing'}`);
-        log(`- Spinner: ${document.getElementById('testRegisterSpinner') ? '✅ Found' : '❌ Missing'}`);
-    </script>
+
+    // ============================================================
+    // HTML ESCAPE FUNCTION
+    // ============================================================
+
+    function escapeHtml(value) {
+
+        const div =
+            document.createElement('div');
+
+        div.textContent =
+            value;
+
+        return div.innerHTML;
+    }
+
+
+    // ============================================================
+    // INITIAL TEST
+    // ============================================================
+
+    log(
+        'Debug page loaded successfully'
+    );
+
+
+    log(
+        'Button elements found:'
+    );
+
+
+    log(
+        `- Register button: ${
+            document.getElementById('testRegisterBtn')
+                ? '✅ Found'
+                : '❌ Missing'
+        }`
+    );
+
+
+    log(
+        `- Button text: ${
+            document.getElementById('testRegisterBtnText')
+                ? '✅ Found'
+                : '❌ Missing'
+        }`
+    );
+
+
+    log(
+        `- Spinner: ${
+            document.getElementById('testRegisterSpinner')
+                ? '✅ Found'
+                : '❌ Missing'
+        }`
+    );
+
+</script>
+
 </body>
 </html>

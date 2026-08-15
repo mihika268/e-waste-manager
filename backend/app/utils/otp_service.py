@@ -1,155 +1,301 @@
 from app import db
 from app.models.otp import OTP
-from app.models.user import User
 from app.utils.email_service import EmailService
 from flask import current_app
 import logging
 
+
 logger = logging.getLogger(__name__)
 
+
 class OTPService:
+
     def __init__(self):
         self.email_service = EmailService()
-    
-    def generate_and_send_otp(self, email, purpose='registration'):
-        """Generate OTP and send it via email"""
+
+    # ============================================================
+    # GENERATE AND SEND OTP
+    # ============================================================
+
+    def generate_and_send_otp(
+        self,
+        email,
+        purpose='registration'
+    ):
         try:
-            # Clean up expired OTPs first
+
+            # ----------------------------------------------------
+            # Remove expired OTPs
+            # ----------------------------------------------------
+
             OTP.cleanup_expired_otps()
-            
-            # Check if there's already a valid OTP for this email and purpose
-            existing_otp = OTP.query.filter(
+
+            # ----------------------------------------------------
+            # Invalidate previous unused OTPs
+            # ----------------------------------------------------
+
+            existing_otps = OTP.query.filter(
                 OTP.email == email,
                 OTP.purpose == purpose,
-                OTP.is_used == False,
-                OTP.expires_at > db.func.now()
-            ).first()
-            
-            if existing_otp:
-                # Resend the existing OTP
-                logger.info(f"Resending existing OTP for {email}")
-                success = self.email_service.send_otp_email(email, existing_otp.otp_code, purpose)
-                if success:
-                    return {
-                        'success': True,
-                        'message': 'OTP sent successfully',
-                        'otp_id': existing_otp.id,
-                        'expires_at': existing_otp.expires_at.isoformat(),
-                        'otp_code': existing_otp.otp_code  # Always include OTP in response for development
-                    }
-                else:
-                    return {
-                        'success': True,
-                        'message': 'OTP generated. Check console/logs for the code if email failed.',
-                        'otp_id': existing_otp.id,
-                        'expires_at': existing_otp.expires_at.isoformat(),
-                        'otp_code': existing_otp.otp_code  # Include OTP in response for development
-                    }
-            
-            # Create new OTP
-            expiry_minutes = current_app.config.get('OTP_EXPIRY_MINUTES', 10)
-            otp = OTP(email=email, purpose=purpose, expiry_minutes=expiry_minutes)
-            
+                OTP.is_used.is_(False)
+            ).all()
+
+            for old_otp in existing_otps:
+                old_otp.is_used = True
+
+            db.session.commit()
+
+            # ----------------------------------------------------
+            # Generate new OTP
+            # ----------------------------------------------------
+
+            expiry_minutes = current_app.config.get(
+                'OTP_EXPIRY_MINUTES',
+                10
+            )
+
+            otp = OTP(
+                email=email,
+                purpose=purpose,
+                expiry_minutes=expiry_minutes
+            )
+
             db.session.add(otp)
             db.session.commit()
-            
-            # Send OTP via email
-            success = self.email_service.send_otp_email(email, otp.otp_code, purpose)
-            
-            if success:
-                logger.info(f"OTP generated and sent successfully for {email}")
+
+            # ----------------------------------------------------
+            # Send OTP through Resend
+            # ----------------------------------------------------
+
+            email_sent = self.email_service.send_otp_email(
+                email,
+                otp.otp_code,
+                purpose
+            )
+
+            # ----------------------------------------------------
+            # Email failed
+            # ----------------------------------------------------
+
+            if not email_sent:
+
+                logger.error(
+                    "OTP email could not be sent to %s",
+                    email
+                )
+
+                # Delete OTP because user cannot receive it
+                db.session.delete(otp)
+                db.session.commit()
+
                 return {
-                    'success': True,
-                    'message': 'OTP sent successfully',
-                    'otp_id': otp.id,
-                    'expires_at': otp.expires_at.isoformat(),
-                    'otp_code': otp.otp_code  # Always include OTP in response for development
+                    'success': False,
+                    'message': (
+                        'Unable to send verification email. '
+                        'Please check the email configuration '
+                        'and try again.'
+                    ),
+                    'email_sent': False
                 }
-            else:
-                # Even if email fails, OTP is still valid for manual verification
-                logger.warning(f"OTP generated but email failed for {email}")
-                return {
-                    'success': True,
-                    'message': 'OTP generated. Check console/logs for the code if email failed.',
-                    'otp_id': otp.id,
-                    'expires_at': otp.expires_at.isoformat(),
-                    'otp_code': otp.otp_code  # Include OTP in response for development
-                }
-                
+
+            # ----------------------------------------------------
+            # Email sent successfully
+            # ----------------------------------------------------
+
+            logger.info(
+                "OTP email sent successfully to %s",
+                email
+            )
+
+            return {
+                'success': True,
+                'message': (
+                    'Verification email sent successfully'
+                ),
+                'otp_id': otp.id,
+                'email_sent': True,
+                'expires_at': (
+                    otp.expires_at.isoformat()
+                )
+            }
+
         except Exception as e:
-            logger.error(f"Error generating OTP for {email}: {str(e)}")
+
+            logger.exception(
+                "Error generating/sending OTP for %s: %s",
+                email,
+                str(e)
+            )
+
             db.session.rollback()
+
             return {
                 'success': False,
-                'message': f'Error generating OTP: {str(e)}'
+                'message': (
+                    'Unable to send verification email.'
+                ),
+                'email_sent': False
             }
-    
-    def verify_otp(self, email, otp_code, purpose='registration'):
-        """Verify OTP code"""
+
+    # ============================================================
+    # VERIFY OTP
+    # ============================================================
+
+    def verify_otp(
+        self,
+        email,
+        otp_code,
+        purpose='registration'
+    ):
         try:
+
+            # ----------------------------------------------------
             # Find valid OTP
+            # ----------------------------------------------------
+
             otp = OTP.query.filter(
                 OTP.email == email,
                 OTP.otp_code == otp_code,
                 OTP.purpose == purpose,
-                OTP.is_used == False,
+                OTP.is_used.is_(False),
                 OTP.expires_at > db.func.now()
             ).first()
-            
+
+            # ----------------------------------------------------
+            # Invalid / expired OTP
+            # ----------------------------------------------------
+
             if not otp:
+
+                logger.warning(
+                    "Invalid or expired OTP for %s",
+                    email
+                )
+
                 return {
                     'success': False,
-                    'message': 'Invalid or expired OTP'
+                    'message': (
+                        'Invalid or expired OTP'
+                    )
                 }
-            
+
+            # ----------------------------------------------------
             # Mark OTP as used
-            otp.mark_as_used()
-            
-            logger.info(f"OTP verified successfully for {email}")
+            # ----------------------------------------------------
+
+            otp.is_used = True
+
+            db.session.commit()
+
+            logger.info(
+                "OTP verified successfully for %s",
+                email
+            )
+
             return {
                 'success': True,
-                'message': 'OTP verified successfully'
+                'message': (
+                    'OTP verified successfully'
+                )
             }
-            
+
         except Exception as e:
-            logger.error(f"Error verifying OTP for {email}: {str(e)}")
+
+            logger.exception(
+                "OTP verification error for %s: %s",
+                email,
+                str(e)
+            )
+
+            db.session.rollback()
+
             return {
                 'success': False,
-                'message': f'Error verifying OTP: {str(e)}'
+                'message': (
+                    'Unable to verify OTP'
+                )
             }
-    
-    def resend_otp(self, email, purpose='registration'):
-        """Resend OTP for the same email and purpose"""
+
+    # ============================================================
+    # RESEND OTP
+    # ============================================================
+
+    def resend_otp(
+        self,
+        email,
+        purpose='registration'
+    ):
         try:
-            # Invalidate existing OTPs for this email and purpose
+
+            # ----------------------------------------------------
+            # Invalidate existing OTPs
+            # ----------------------------------------------------
+
             existing_otps = OTP.query.filter(
                 OTP.email == email,
                 OTP.purpose == purpose,
-                OTP.is_used == False
+                OTP.is_used.is_(False)
             ).all()
-            
+
             for otp in existing_otps:
                 otp.is_used = True
-            
+
             db.session.commit()
-            
+
+            logger.info(
+                "Previous OTPs invalidated for %s",
+                email
+            )
+
+            # ----------------------------------------------------
             # Generate and send new OTP
-            return self.generate_and_send_otp(email, purpose)
-            
+            # ----------------------------------------------------
+
+            return self.generate_and_send_otp(
+                email,
+                purpose
+            )
+
         except Exception as e:
-            logger.error(f"Error resending OTP for {email}: {str(e)}")
+
+            logger.exception(
+                "Resend OTP error for %s: %s",
+                email,
+                str(e)
+            )
+
             db.session.rollback()
+
             return {
                 'success': False,
-                'message': f'Error resending OTP: {str(e)}'
+                'message': (
+                    'Unable to resend verification email'
+                ),
+                'email_sent': False
             }
-    
+
+    # ============================================================
+    # CLEANUP EXPIRED OTPs
+    # ============================================================
+
     def cleanup_expired_otps(self):
-        """Clean up expired OTPs"""
+
         try:
+
             count = OTP.cleanup_expired_otps()
-            logger.info(f"Cleaned up {count} expired OTPs")
+
+            logger.info(
+                "Cleaned up %s expired OTPs",
+                count
+            )
+
             return count
+
         except Exception as e:
-            logger.error(f"Error cleaning up expired OTPs: {str(e)}")
+
+            logger.exception(
+                "OTP cleanup error: %s",
+                str(e)
+            )
+
             return 0

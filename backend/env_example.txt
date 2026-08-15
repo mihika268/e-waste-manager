@@ -9,9 +9,9 @@ DATABASE_URL=sqlite:///ewaste.db
 MAIL_SERVER=smtp.gmail.com
 MAIL_PORT=587
 MAIL_USE_TLS=true
-MAIL_USERNAME=your-email@gmail.com
-MAIL_PASSWORD=your-app-password
-MAIL_DEFAULT_SENDER=noreply@ewaste.com
+MAIL_USERNAME=elevoraxyz@gmail.com
+MAIL_PASSWORD=vcku yklg oepw vyks
+MAIL_DEFAULT_SENDER=elevoraxyz@gmail.com
 
 # OTP Configuration
 OTP_EXPIRY_MINUTES=10

@@ -3,245 +3,954 @@
 {% block title %}Login - E-Waste Management System{% endblock %}
 
 {% block content %}
+
 <div class="login-container">
+
     <div class="container-fluid h-100">
+
         <div class="row h-100">
-            <!-- Left Side - Branding -->
+
+            <!-- =====================================================
+                 LEFT SIDE - BRANDING
+            ====================================================== -->
+
             <div class="col-lg-6 d-none d-lg-flex bg-success text-white p-0">
-                <div class="d-flex flex-column justify-content-center align-items-center w-100 p-5">
+
+                <div
+                    class="d-flex flex-column justify-content-center align-items-center w-100 p-5"
+                >
+
                     <div class="text-center">
-                        <i class="fas fa-recycle display-1 mb-4"></i>
-                        <h1 class="display-4 fw-bold mb-4">E-Waste Manager</h1>
-                        <p class="lead mb-4">Responsible Electronic Waste Management for a Sustainable Future</p>
+
+                        <i
+                            class="fas fa-recycle display-1 mb-4"
+                        ></i>
+
+                        <h1 class="display-4 fw-bold mb-4">
+                            E-Waste Manager
+                        </h1>
+
+                        <p class="lead mb-4">
+                            Responsible Electronic Waste Management
+                            for a Sustainable Future
+                        </p>
+
+
+                        <!-- FEATURES -->
+
                         <div class="row text-center">
+
                             <div class="col-4">
-                                <i class="fas fa-laptop fa-2x mb-2"></i>
-                                <p class="small">Track Devices</p>
+
+                                <i
+                                    class="fas fa-laptop fa-2x mb-2"
+                                ></i>
+
+                                <p class="small">
+                                    Track Devices
+                                </p>
+
                             </div>
+
+
                             <div class="col-4">
-                                <i class="fas fa-truck fa-2x mb-2"></i>
-                                <p class="small">Schedule Pickup</p>
+
+                                <i
+                                    class="fas fa-truck fa-2x mb-2"
+                                ></i>
+
+                                <p class="small">
+                                    Schedule Pickup
+                                </p>
+
                             </div>
+
+
                             <div class="col-4">
-                                <i class="fas fa-leaf fa-2x mb-2"></i>
-                                <p class="small">Go Green</p>
+
+                                <i
+                                    class="fas fa-leaf fa-2x mb-2"
+                                ></i>
+
+                                <p class="small">
+                                    Go Green
+                                </p>
+
                             </div>
+
                         </div>
+
                     </div>
+
                 </div>
+
             </div>
-            
-            <!-- Right Side - Login Form -->
-            <div class="col-lg-6 d-flex align-items-center justify-content-center">
-                <div class="login-form-container w-100" style="max-width: 400px;">
-                    <div class="text-center mb-4 d-lg-none">
-                        <i class="fas fa-recycle text-success" style="font-size: 3rem;"></i>
-                        <h2 class="text-success">E-Waste Manager</h2>
+
+
+            <!-- =====================================================
+                 RIGHT SIDE - LOGIN
+            ====================================================== -->
+
+            <div
+                class="col-lg-6 d-flex align-items-center justify-content-center"
+            >
+
+                <div
+                    class="login-form-container w-100"
+                    style="max-width: 400px;"
+                >
+
+
+                    <!-- MOBILE BRAND -->
+
+                    <div
+                        class="text-center mb-4 d-lg-none"
+                    >
+
+                        <i
+                            class="fas fa-recycle text-success"
+                            style="font-size: 3rem;"
+                        ></i>
+
+                        <h2 class="text-success">
+                            E-Waste Manager
+                        </h2>
+
                     </div>
-                    
+
+
+                    <!-- LOGIN CARD -->
+
                     <div class="card shadow-lg border-0">
+
                         <div class="card-body p-5">
-                            <h3 class="card-title text-center mb-4">Welcome Back</h3>
-                            
-                            <!-- Alert Messages -->
-                            <div id="alertContainer"></div>
-                            
+
+
+                            <!-- TITLE -->
+
+                            <h3
+                                class="card-title text-center mb-4"
+                            >
+                                Welcome Back
+                            </h3>
+
+
+                            <!-- ALERT -->
+
+                            <div
+                                id="alertContainer"
+                            ></div>
+
+
+                            <!-- =================================================
+                                 LOGIN FORM
+                            ================================================== -->
+
                             <form id="loginForm">
+
+
+                                <!-- USERNAME / EMAIL -->
+
                                 <div class="mb-3">
-                                    <label for="username" class="form-label">
-                                        <i class="fas fa-user me-2"></i>Username or Email
+
+                                    <label
+                                        for="username"
+                                        class="form-label"
+                                    >
+
+                                        <i
+                                            class="fas fa-user me-2"
+                                        ></i>
+
+                                        Username or Email
+
                                     </label>
-                                    <input type="text" class="form-control form-control-lg" id="username" name="username" required>
+
+
+                                    <input
+                                        type="text"
+                                        class="form-control form-control-lg"
+                                        id="username"
+                                        name="username"
+                                        placeholder="Enter username or email"
+                                        autocomplete="username"
+                                        required
+                                    >
+
                                 </div>
-                                
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">
-                                        <i class="fas fa-lock me-2"></i>Password
+
+
+                                <!-- PASSWORD -->
+
+                                <div class="mb-2">
+
+                                    <label
+                                        for="password"
+                                        class="form-label"
+                                    >
+
+                                        <i
+                                            class="fas fa-lock me-2"
+                                        ></i>
+
+                                        Password
+
                                     </label>
+
+
                                     <div class="input-group">
-                                        <input type="password" class="form-control form-control-lg" id="password" name="password" required>
-                                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                            <i class="fas fa-eye"></i>
+
+                                        <input
+                                            type="password"
+                                            class="form-control form-control-lg"
+                                            id="password"
+                                            name="password"
+                                            placeholder="Enter password"
+                                            autocomplete="current-password"
+                                            required
+                                        >
+
+
+                                        <button
+                                            class="btn btn-outline-secondary"
+                                            type="button"
+                                            id="togglePassword"
+                                            aria-label="Show password"
+                                        >
+
+                                            <i
+                                                class="fas fa-eye"
+                                            ></i>
+
                                         </button>
+
                                     </div>
+
                                 </div>
-                                
-                                <div class="mb-3 form-check">
-                                    <input type="checkbox" class="form-check-input" id="rememberMe">
-                                    <label class="form-check-label" for="rememberMe">
+
+
+                                <!-- =================================================
+                                     FORGOT PASSWORD
+                                ================================================== -->
+
+                                <div
+                                    class="text-end mb-3"
+                                >
+
+                                    <a
+                                        href="/forgot-password"
+                                        class="text-success text-decoration-none"
+                                    >
+
+                                        <i
+                                            class="fas fa-key me-1"
+                                        ></i>
+
+                                        Forgot Password?
+
+                                    </a>
+
+                                </div>
+
+
+                                <!-- REMEMBER ME -->
+
+                                <div
+                                    class="mb-3 form-check"
+                                >
+
+                                    <input
+                                        type="checkbox"
+                                        class="form-check-input"
+                                        id="rememberMe"
+                                    >
+
+
+                                    <label
+                                        class="form-check-label"
+                                        for="rememberMe"
+                                    >
                                         Remember me
                                     </label>
+
                                 </div>
-                                
+
+
+                                <!-- LOGIN BUTTON -->
+
                                 <div class="d-grid">
-                                    <button type="submit" class="btn btn-success btn-lg" id="loginBtn">
-                                        <i class="fas fa-sign-in-alt me-2"></i>
-                                        <span id="loginBtnText">Sign In</span>
-                                        <div class="spinner-border spinner-border-sm ms-2 d-none" id="loginSpinner"></div>
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success btn-lg"
+                                        id="loginBtn"
+                                    >
+
+                                        <i
+                                            class="fas fa-sign-in-alt me-2"
+                                        ></i>
+
+
+                                        <span
+                                            id="loginBtnText"
+                                        >
+                                            Sign In
+                                        </span>
+
+
+                                        <span
+                                            class="spinner-border spinner-border-sm ms-2 d-none"
+                                            id="loginSpinner"
+                                            role="status"
+                                            aria-hidden="true"
+                                        ></span>
+
                                     </button>
+
                                 </div>
+
                             </form>
-                            
+
+
                             <hr class="my-4">
-                            
+
+
+                            <!-- =================================================
+                                 REGISTER
+                            ================================================== -->
+
                             <div class="text-center">
-                                <p class="mb-0">Don't have an account? <a href="/register" class="text-success">Create Account</a></p>
+
+                                <p class="mb-0">
+
+                                    Don't have an account?
+
+                                    <a
+                                        href="/register"
+                                        class="text-success"
+                                    >
+                                        Create Account
+                                    </a>
+
+                                </p>
+
                             </div>
+
                         </div>
+
                     </div>
-                    
-                    <div class="text-center mt-4">
+
+
+                    <!-- FOOTER -->
+
+                    <div
+                        class="text-center mt-4"
+                    >
+
                         <small class="text-muted">
-                            By signing in, you agree to our Terms of Service and Privacy Policy
+
+                            By signing in, you agree to our
+                            Terms of Service and Privacy Policy
+
                         </small>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
 
+
+<!-- =============================================================
+     STYLES
+============================================================== -->
+
 <style>
+
 .login-container {
+
     min-height: 100vh;
+
 }
+
 
 .login-form-container {
+
     padding: 2rem;
+
 }
+
 
 .card {
+
     border-radius: 15px;
+
 }
+
+
+.form-control {
+
+    border-radius: 8px;
+
+}
+
 
 .form-control:focus {
+
     border-color: #198754;
-    box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+
+    box-shadow:
+        0 0 0 0.2rem
+        rgba(25, 135, 84, 0.25);
+
 }
+
 
 .btn-success {
+
     background-color: #198754;
+
     border-color: #198754;
+
 }
+
 
 .btn-success:hover {
+
     background-color: #157347;
+
     border-color: #146c43;
+
 }
+
 
 .bg-success {
-    background: linear-gradient(135deg, #198754 0%, #20c997 100%) !important;
+
+    background:
+        linear-gradient(
+            135deg,
+            #198754 0%,
+            #20c997 100%
+        ) !important;
+
 }
 
-/* Custom checkbox styling */
+
 .form-check-input {
+
     width: 1.25rem;
+
     height: 1.25rem;
+
     margin-top: 0.125rem;
+
 }
+
 
 .form-check-label {
+
     font-size: 1rem;
+
     margin-left: 0.5rem;
+
 }
+
+
+a.text-success:hover {
+
+    color: #146c43 !important;
+
+    text-decoration: underline !important;
+
+}
+
 
 @media (max-width: 991.98px) {
+
     .login-container {
-        background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+
+        background:
+            linear-gradient(
+                135deg,
+                #198754 0%,
+                #20c997 100%
+            );
+
     }
-    
+
+
     .login-form-container {
+
         padding: 1rem;
+
     }
+
 }
+
 </style>
 
+
+<!-- =============================================================
+     JAVASCRIPT
+============================================================== -->
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const loginForm = document.getElementById('loginForm');
-    const togglePassword = document.getElementById('togglePassword');
-    const passwordInput = document.getElementById('password');
-    const loginBtn = document.getElementById('loginBtn');
-    const loginBtnText = document.getElementById('loginBtnText');
-    const loginSpinner = document.getElementById('loginSpinner');
-    
-    // Toggle password visibility
-    togglePassword.addEventListener('click', function() {
-        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-        passwordInput.setAttribute('type', type);
-        
-        const icon = this.querySelector('i');
-        icon.classList.toggle('fa-eye');
-        icon.classList.toggle('fa-eye-slash');
-    });
-    
-    // Handle login form submission
-    loginForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const formData = new FormData(loginForm);
-        const loginData = {
-            username: formData.get('username'),
-            password: formData.get('password')
-        };
-        
-        // Show loading state
-        loginBtn.disabled = true;
-        loginBtnText.textContent = 'Signing In...';
-        loginSpinner.classList.remove('d-none');
-        
-        try {
-            const response = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
+
+document.addEventListener(
+    'DOMContentLoaded',
+    function () {
+
+
+        // =====================================================
+        // ELEMENTS
+        // =====================================================
+
+        const loginForm =
+            document.getElementById(
+                'loginForm'
+            );
+
+
+        const togglePassword =
+            document.getElementById(
+                'togglePassword'
+            );
+
+
+        const passwordInput =
+            document.getElementById(
+                'password'
+            );
+
+
+        const loginBtn =
+            document.getElementById(
+                'loginBtn'
+            );
+
+
+        const loginBtnText =
+            document.getElementById(
+                'loginBtnText'
+            );
+
+
+        const loginSpinner =
+            document.getElementById(
+                'loginSpinner'
+            );
+
+
+        // =====================================================
+        // PASSWORD VISIBILITY
+        // =====================================================
+
+        togglePassword.addEventListener(
+            'click',
+            function () {
+
+
+                const isPassword =
+                    passwordInput.type === 'password';
+
+
+                passwordInput.type =
+                    isPassword
+                        ? 'text'
+                        : 'password';
+
+
+                const icon =
+                    this.querySelector('i');
+
+
+                if (isPassword) {
+
+                    icon.classList.remove(
+                        'fa-eye'
+                    );
+
+                    icon.classList.add(
+                        'fa-eye-slash'
+                    );
+
+                    this.setAttribute(
+                        'aria-label',
+                        'Hide password'
+                    );
+
+                } else {
+
+                    icon.classList.remove(
+                        'fa-eye-slash'
+                    );
+
+                    icon.classList.add(
+                        'fa-eye'
+                    );
+
+                    this.setAttribute(
+                        'aria-label',
+                        'Show password'
+                    );
+
+                }
+
+            }
+        );
+
+
+        // =====================================================
+        // LOGIN
+        // =====================================================
+
+        loginForm.addEventListener(
+            'submit',
+            async function (event) {
+
+                event.preventDefault();
+
+
+                const username =
+                    document
+                        .getElementById('username')
+                        .value
+                        .trim();
+
+
+                const password =
+                    passwordInput.value;
+
+
+                if (!username) {
+
+                    showAlert(
+                        'Please enter your username or email.',
+                        'warning'
+                    );
+
+                    return;
+
+                }
+
+
+                if (!password) {
+
+                    showAlert(
+                        'Please enter your password.',
+                        'warning'
+                    );
+
+                    return;
+
+                }
+
+
+                // -------------------------------------------------
+                // LOADING STATE
+                // -------------------------------------------------
+
+                loginBtn.disabled = true;
+
+                loginBtnText.textContent =
+                    'Signing In...';
+
+                loginSpinner.classList.remove(
+                    'd-none'
+                );
+
+
+                try {
+
+
+                    // -------------------------------------------------
+                    // API REQUEST
+                    // -------------------------------------------------
+
+                    const response =
+                        await fetch(
+                            '/api/auth/login',
+                            {
+
+                                method: 'POST',
+
+                                headers: {
+
+                                    'Content-Type':
+                                        'application/json'
+
+                                },
+
+                                body:
+                                    JSON.stringify({
+
+                                        username:
+                                            username,
+
+                                        password:
+                                            password
+
+                                    })
+
+                            }
+                        );
+
+
+                    // -------------------------------------------------
+                    // PARSE RESPONSE
+                    // -------------------------------------------------
+
+                    let result = {};
+
+                    try {
+
+                        result =
+                            await response.json();
+
+                    } catch (jsonError) {
+
+                        result = {};
+
+                    }
+
+
+                    // -------------------------------------------------
+                    // SUCCESS
+                    // -------------------------------------------------
+
+                    if (response.ok) {
+
+
+                        if (
+                            !result.access_token
+                        ) {
+
+                            showAlert(
+                                'Login response did not contain an access token.',
+                                'danger'
+                            );
+
+                            return;
+
+                        }
+
+
+                        // Store JWT
+
+                        localStorage.setItem(
+                            'access_token',
+                            result.access_token
+                        );
+
+
+                        // Store user data
+
+                        if (result.user) {
+
+                            localStorage.setItem(
+                                'user_data',
+                                JSON.stringify(
+                                    result.user
+                                )
+                            );
+
+                        }
+
+
+                        // Remember me
+
+                        const rememberMe =
+                            document.getElementById(
+                                'rememberMe'
+                            );
+
+
+                        if (
+                            rememberMe &&
+                            rememberMe.checked
+                        ) {
+
+                            localStorage.setItem(
+                                'remember_me',
+                                'true'
+                            );
+
+                        } else {
+
+                            localStorage.removeItem(
+                                'remember_me'
+                            );
+
+                        }
+
+
+                        showAlert(
+                            'Login successful! Redirecting...',
+                            'success'
+                        );
+
+
+                        // -------------------------------------------------
+                        // REDIRECT
+                        // -------------------------------------------------
+
+                        setTimeout(
+                            function () {
+
+                                window.location.href =
+                                    '/dashboard';
+
+                            },
+                            800
+                        );
+
+
+                    } else {
+
+
+                        // -------------------------------------------------
+                        // LOGIN ERROR
+                        // -------------------------------------------------
+
+                        showAlert(
+
+                            result.error ||
+                            result.message ||
+                            'Invalid username/email or password.',
+
+                            'danger'
+
+                        );
+
+                    }
+
+
+                } catch (error) {
+
+
+                    console.error(
+                        'Login error:',
+                        error
+                    );
+
+
+                    showAlert(
+                        'Network error. Please check that the server is running and try again.',
+                        'danger'
+                    );
+
+
+                } finally {
+
+
+                    // -------------------------------------------------
+                    // RESET LOADING STATE
+                    // -------------------------------------------------
+
+                    loginBtn.disabled =
+                        false;
+
+
+                    loginBtnText.textContent =
+                        'Sign In';
+
+
+                    loginSpinner.classList.add(
+                        'd-none'
+                    );
+
+                }
+
+            }
+        );
+
+
+        // =====================================================
+        // ALERT FUNCTION
+        // =====================================================
+
+        function showAlert(
+            message,
+            type
+        ) {
+
+
+            const alertContainer =
+                document.getElementById(
+                    'alertContainer'
+                );
+
+
+            // Clear previous alert
+
+            alertContainer.innerHTML =
+                '';
+
+
+            const alert =
+                document.createElement(
+                    'div'
+                );
+
+
+            alert.className =
+                `alert alert-${type} alert-dismissible fade show`;
+
+
+            alert.setAttribute(
+                'role',
+                'alert'
+            );
+
+
+            alert.innerHTML = `
+
+                ${message}
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"
+                ></button>
+
+            `;
+
+
+            alertContainer.appendChild(
+                alert
+            );
+
+
+            // Auto dismiss
+
+            setTimeout(
+                function () {
+
+                    if (
+                        alert &&
+                        alert.parentNode
+                    ) {
+
+                        alert.remove();
+
+                    }
+
                 },
-                body: JSON.stringify(loginData)
-            });
-            
-            const result = await response.json();
-            
-            if (response.ok) {
-                // Store token and user data
-                localStorage.setItem('access_token', result.access_token);
-                localStorage.setItem('user_data', JSON.stringify(result.user));
-                
-                showAlert('Login successful! Redirecting...', 'success');
-                
-                // Redirect to dashboard
-                setTimeout(() => {
-                    window.location.href = '/dashboard';
-                }, 1000);
-            } else {
-                showAlert(result.error || 'Login failed', 'danger');
-            }
-        } catch (error) {
-            showAlert('Network error. Please try again.', 'danger');
-        } finally {
-            // Reset button state
-            loginBtn.disabled = false;
-            loginBtnText.textContent = 'Sign In';
-            loginSpinner.classList.add('d-none');
+                5000
+            );
+
         }
-    });
-    
-    function showAlert(message, type) {
-        const alertContainer = document.getElementById('alertContainer');
-        const alert = document.createElement('div');
-        alert.className = `alert alert-${type} alert-dismissible fade show`;
-        alert.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        `;
-        alertContainer.appendChild(alert);
-        
-        // Auto-dismiss after 5 seconds
-        setTimeout(() => {
-            if (alert.parentNode) {
-                alert.remove();
-            }
-        }, 5000);
+
     }
-});
+);
+
 </script>
+
 {% endblock %}
