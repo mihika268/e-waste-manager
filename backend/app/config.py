@@ -62,9 +62,6 @@ class Config:
         os.path.dirname(__file__)
     )
 
-    # Vercel only provides temporary writable storage.
-    # Local development continues to use backend/instance.
-
     if os.environ.get('VERCEL'):
 
         instance_dir = '/tmp/ewaste-instance'
@@ -90,73 +87,61 @@ class Config:
         'DATABASE_URL'
     )
 
+    # --------------------------------------------------------
+    # PostgreSQL / Supabase
+    # --------------------------------------------------------
+
     if db_url:
 
+        # SQLAlchemy expects postgresql://
+        # Some providers return postgres://
         if db_url.startswith(
-            'sqlite:///'
+            'postgres://'
         ):
 
-            db_path = db_url.replace(
-                'sqlite:///',
-                '',
+            db_url = db_url.replace(
+                'postgres://',
+                'postgresql://',
                 1
             )
 
-            if os.environ.get(
-                'VERCEL'
-            ):
+        SQLALCHEMY_DATABASE_URI = db_url
 
-                SQLALCHEMY_DATABASE_URI = (
-                    'sqlite:////tmp/ewaste.db'
-                )
-
-            elif not os.path.isabs(
-                db_path
-            ):
-
-                SQLALCHEMY_DATABASE_URI = (
-                    'sqlite:///'
-                    + os.path.join(
-                        instance_dir,
-                        os.path.basename(
-                            db_path
-                        )
-                    )
-                )
-
-            else:
-
-                SQLALCHEMY_DATABASE_URI = (
-                    db_url
-                )
-
-        else:
-
-            SQLALCHEMY_DATABASE_URI = (
-                db_url
-            )
+    # --------------------------------------------------------
+    # Local development fallback
+    # --------------------------------------------------------
 
     else:
 
-        if os.environ.get(
-            'VERCEL'
-        ):
-
-            SQLALCHEMY_DATABASE_URI = (
-                'sqlite:////tmp/ewaste.db'
+        SQLALCHEMY_DATABASE_URI = (
+            'sqlite:///'
+            + os.path.join(
+                instance_dir,
+                'ewaste.db'
             )
+        )
 
-        else:
-
-            SQLALCHEMY_DATABASE_URI = (
-                'sqlite:///'
-                + os.path.join(
-                    instance_dir,
-                    'ewaste.db'
-                )
-            )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+
+    # ========================================================
+    # DATABASE ENGINE OPTIONS
+    # ========================================================
+
+    # PostgreSQL/Supabase works better with connection
+    # recycling and pre-ping.
+
+    if db_url:
+
+        SQLALCHEMY_ENGINE_OPTIONS = {
+            'pool_pre_ping': True,
+            'pool_recycle': 300
+        }
+
+    else:
+
+        SQLALCHEMY_ENGINE_OPTIONS = {}
 
 
     # ========================================================
@@ -182,15 +167,11 @@ class Config:
                 )
             )
 
-        UPLOAD_FOLDER = (
-            _upload_path
-        )
+        UPLOAD_FOLDER = _upload_path
 
     else:
 
-        if os.environ.get(
-            'VERCEL'
-        ):
+        if os.environ.get('VERCEL'):
 
             UPLOAD_FOLDER = (
                 '/tmp/uploads'
@@ -206,6 +187,7 @@ class Config:
                     )
                 )
             )
+
 
     try:
 
@@ -244,11 +226,14 @@ class Config:
 
 
     # ========================================================
-    # SMTP COMPATIBILITY
+    # SMTP / GMAIL CONFIGURATION
     # ========================================================
 
-    MAIL_SERVER = os.environ.get(
-        'MAIL_SERVER'
+    MAIL_SERVER = (
+        os.environ.get(
+            'MAIL_SERVER'
+        )
+        or 'smtp.gmail.com'
     )
 
     MAIL_PORT = int(
@@ -261,7 +246,7 @@ class Config:
     MAIL_USE_TLS = (
         os.environ.get(
             'MAIL_USE_TLS',
-            'false'
+            'true'
         ).lower()
         in [
             'true',
@@ -282,6 +267,7 @@ class Config:
         os.environ.get(
             'MAIL_DEFAULT_SENDER'
         )
+        or MAIL_USERNAME
     )
 
 
