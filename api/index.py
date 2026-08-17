@@ -1,8 +1,9 @@
 import os
 import sys
 
+
 # ============================================================
-# ADD BACKEND TO PYTHON PATH
+# ADD BACKEND DIRECTORY TO PYTHON PATH
 # ============================================================
 
 BASE_DIR = os.path.dirname(

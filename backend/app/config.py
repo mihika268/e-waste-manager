@@ -1,6 +1,12 @@
 import os
+import tempfile
 from datetime import timedelta
-from dotenv import load_dotenv
+
+try:
+    from dotenv import load_dotenv  # type: ignore
+except ImportError:
+    def load_dotenv(*args, **kwargs):
+        pass
 
 
 # ============================================================
@@ -64,7 +70,10 @@ class Config:
 
     if os.environ.get('VERCEL'):
 
-        instance_dir = '/tmp/ewaste-instance'
+        instance_dir = os.path.join(
+            tempfile.gettempdir(),
+            'ewaste-instance'
+        )
 
     else:
 
@@ -195,6 +204,9 @@ class Config:
             UPLOAD_FOLDER,
             exist_ok=True
         )
+        
+        if os.environ.get('VERCEL'):
+            os.chmod(UPLOAD_FOLDER, 0o700)
 
     except Exception:
 
