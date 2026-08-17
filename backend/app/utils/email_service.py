@@ -1,9 +1,5 @@
-import smtplib
 import logging
-
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.utils import formataddr
+import requests
 
 from flask import current_app
 
@@ -15,42 +11,17 @@ class EmailService:
 
     def __init__(self):
 
-        self.smtp_server = (
-            current_app.config.get('MAIL_SERVER')
-            or 'smtp.gmail.com'
+        # ========================================================
+        # RESEND CONFIGURATION
+        # ========================================================
+
+        self.resend_api_key = current_app.config.get(
+            'RESEND_API_KEY'
         )
 
-        self.smtp_port = int(
-            current_app.config.get('MAIL_PORT')
-            or 587
-        )
-
-        self.use_tls = current_app.config.get(
-            'MAIL_USE_TLS',
-            True
-        )
-
-        self.username = current_app.config.get(
-            'MAIL_USERNAME'
-        )
-
-        self.password = current_app.config.get(
-            'MAIL_PASSWORD'
-        )
-
-        if self.password:
-            self.password = (
-                self.password
-                .replace(' ', '')
-                .strip()
-            )
-
-        self.default_sender = (
-            current_app.config.get(
-                'MAIL_DEFAULT_SENDER'
-            )
-            or self.username
-        )
+        self.resend_from_email = current_app.config.get(
+            'RESEND_FROM_EMAIL'
+        ) or 'onboarding@resend.dev'
 
 
     # ============================================================
@@ -59,28 +30,18 @@ class EmailService:
 
     def _validate_config(self):
 
-        missing = []
-
-        if not self.smtp_server:
-            missing.append('MAIL_SERVER')
-
-        if not self.smtp_port:
-            missing.append('MAIL_PORT')
-
-        if not self.username:
-            missing.append('MAIL_USERNAME')
-
-        if not self.password:
-            missing.append('MAIL_PASSWORD')
-
-        if not self.default_sender:
-            missing.append('MAIL_DEFAULT_SENDER')
-
-        if missing:
+        if not self.resend_api_key:
 
             logger.error(
-                "Missing email configuration: %s",
-                ", ".join(missing)
+                'Missing RESEND_API_KEY'
+            )
+
+            return False
+
+        if not self.resend_from_email:
+
+            logger.error(
+                'Missing RESEND_FROM_EMAIL'
             )
 
             return False
@@ -89,35 +50,7 @@ class EmailService:
 
 
     # ============================================================
-    # CONNECT TO GMAIL
-    # ============================================================
-
-    def _connect(self):
-
-        server = smtplib.SMTP(
-            self.smtp_server,
-            self.smtp_port,
-            timeout=30
-        )
-
-        server.ehlo()
-
-        if self.use_tls:
-
-            server.starttls()
-
-            server.ehlo()
-
-        server.login(
-            self.username,
-            self.password
-        )
-
-        return server
-
-
-    # ============================================================
-    # SEND EMAIL
+    # SEND EMAIL THROUGH RESEND
     # ============================================================
 
     def _send_email(
@@ -128,8 +61,6 @@ class EmailService:
         html_body
     ):
 
-        server = None
-
         try:
 
             if not self._validate_config():
@@ -138,102 +69,75 @@ class EmailService:
 
 
             # ----------------------------------------------------
-            # CREATE MESSAGE
+            # RESEND API REQUEST
             # ----------------------------------------------------
 
-            message = MIMEMultipart(
-                'alternative'
+            response = requests.post(
+                'https://api.resend.com/emails',
+
+                headers={
+                    'Authorization':
+                        f'Bearer {self.resend_api_key}',
+
+                    'Content-Type':
+                        'application/json'
+                },
+
+                json={
+
+                    'from':
+                        f'E-Waste Management System '
+                        f'<{self.resend_from_email}>',
+
+                    'to': [
+                        to_email
+                    ],
+
+                    'subject':
+                        subject,
+
+                    'text':
+                        text_body,
+
+                    'html':
+                        html_body
+                },
+
+                timeout=20
             )
 
-            message['From'] = formataddr(
-                (
-                    'E-Waste Management System',
-                    self.default_sender
+
+            # ----------------------------------------------------
+            # SUCCESS
+            # ----------------------------------------------------
+
+            if 200 <= response.status_code < 300:
+
+                logger.info(
+                    'Email successfully sent to %s',
+                    to_email
                 )
-            )
 
-            message['To'] = to_email
-
-            message['Subject'] = subject
+                return True
 
 
             # ----------------------------------------------------
-            # ATTACH TEXT + HTML
+            # RESEND ERROR
             # ----------------------------------------------------
-
-            message.attach(
-                MIMEText(
-                    text_body,
-                    'plain',
-                    'utf-8'
-                )
-            )
-
-            message.attach(
-                MIMEText(
-                    html_body,
-                    'html',
-                    'utf-8'
-                )
-            )
-
-
-            # ----------------------------------------------------
-            # CONNECT
-            # ----------------------------------------------------
-
-            logger.info(
-                "Connecting to Gmail SMTP server %s:%s",
-                self.smtp_server,
-                self.smtp_port
-            )
-
-            server = self._connect()
-
-
-            # ----------------------------------------------------
-            # SEND
-            # ----------------------------------------------------
-
-            server.sendmail(
-                self.default_sender,
-                [to_email],
-                message.as_string()
-            )
-
-
-            logger.info(
-                "Email successfully sent to %s",
-                to_email
-            )
-
-            return True
-
-
-        except smtplib.SMTPAuthenticationError:
 
             logger.error(
-                "Gmail authentication failed. "
-                "Make sure MAIL_PASSWORD contains "
-                "the Google App Password."
+                'Resend API error: HTTP %s - %s',
+                response.status_code,
+                response.text
             )
 
             return False
 
 
-        except smtplib.SMTPConnectError:
+        except requests.RequestException as e:
 
             logger.error(
-                "Could not connect to Gmail SMTP server."
-            )
-
-            return False
-
-
-        except smtplib.SMTPException as e:
-
-            logger.error(
-                "Gmail SMTP error: %s",
+                'Resend connection error: %s',
                 str(e)
             )
 
@@ -243,22 +147,11 @@ class EmailService:
         except Exception as e:
 
             logger.exception(
-                "Email sending error: %s",
+                'Unexpected email error: %s',
                 str(e)
             )
 
             return False
-
-
-        finally:
-
-            if server:
-
-                try:
-                    server.quit()
-
-                except Exception:
-                    pass
 
 
     # ============================================================
@@ -278,6 +171,10 @@ class EmailService:
         )
 
 
+        # --------------------------------------------------------
+        # PLAIN TEXT EMAIL
+        # --------------------------------------------------------
+
         text_body = f"""
 E-Waste Management System
 
@@ -293,169 +190,182 @@ Do not share this verification code with anyone.
 """
 
 
+        # --------------------------------------------------------
+        # HTML EMAIL
+        # --------------------------------------------------------
+
         html_body = f"""
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
 
 <head>
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Email Verification</title>
+    <title>
+        Email Verification
+    </title>
 
 </head>
 
 
-<body
-    style="
-        margin:0;
-        padding:0;
-        background:#f4f7f5;
-        font-family:Arial,Helvetica,sans-serif;
-    "
->
+<body style="
+    margin:0;
+    padding:0;
+    background:#f4f7f5;
+    font-family:Arial,sans-serif;
+">
 
-    <div
-        style="
-            max-width:600px;
-            margin:40px auto;
-            background:#ffffff;
-            border-radius:12px;
-            overflow:hidden;
-        "
-    >
 
-        <div
-            style="
-                background:#28a745;
-                padding:25px;
-                text-align:center;
-            "
-        >
+    <div style="
+        max-width:600px;
+        margin:40px auto;
+        background:white;
+        border-radius:12px;
+        overflow:hidden;
+    ">
 
-            <h1
-                style="
-                    color:#ffffff;
-                    margin:0;
-                "
-            >
+
+        <!-- HEADER -->
+
+        <div style="
+            background:#28a745;
+            padding:25px;
+            text-align:center;
+        ">
+
+            <h1 style="
+                color:white;
+                margin:0;
+            ">
+
                 🌱 E-Waste Management
+
             </h1>
 
         </div>
 
 
-        <div
-            style="
-                padding:35px;
-                text-align:center;
-            "
-        >
+        <!-- CONTENT -->
+
+        <div style="
+            padding:35px;
+            text-align:center;
+        ">
+
 
             <h2>
                 Email Verification
             </h2>
 
 
-            <p
-                style="
-                    color:#666666;
-                    font-size:16px;
-                "
-            >
-                Your verification code is:
+            <p style="
+                color:#666;
+                font-size:16px;
+            ">
+
+                Thank you for registering with
+                E-Waste Management System.
+
             </p>
 
 
-            <div
-                style="
-                    margin:30px auto;
-                    padding:20px;
-                    max-width:250px;
-                    background:#f1fff5;
-                    border:2px solid #28a745;
-                    border-radius:10px;
-                "
-            >
+            <p style="
+                color:#666;
+                font-size:16px;
+            ">
 
-                <span
-                    style="
-                        color:#28a745;
-                        font-size:36px;
-                        font-weight:bold;
-                        letter-spacing:8px;
-                    "
-                >
+                Your verification code is:
+
+            </p>
+
+
+            <!-- OTP -->
+
+            <div style="
+                margin:30px auto;
+                padding:20px;
+                background:#f8fff9;
+                border:2px solid #28a745;
+                border-radius:10px;
+                max-width:250px;
+            ">
+
+                <div style="
+                    color:#28a745;
+                    font-size:36px;
+                    font-weight:bold;
+                    letter-spacing:8px;
+                ">
+
                     {otp_code}
-                </span>
+
+                </div>
 
             </div>
 
 
-            <p
-                style="
-                    color:#666666;
-                    font-size:14px;
-                "
-            >
+            <p style="
+                color:#666;
+                font-size:14px;
+            ">
+
                 This code will expire in
                 <strong>10 minutes</strong>.
+
             </p>
 
 
-            <p
-                style="
-                    color:#999999;
-                    font-size:13px;
-                "
-            >
+            <p style="
+                color:#999;
+                font-size:13px;
+            ">
+
                 If you did not request this code,
                 you can safely ignore this email.
+
             </p>
 
 
-            <p
-                style="
-                    color:#dc3545;
-                    font-size:13px;
-                    font-weight:bold;
-                "
-            >
-                Never share your verification code
-                with anyone.
+            <p style="
+                color:#dc3545;
+                font-size:13px;
+                font-weight:bold;
+            ">
+
+                Never share your verification code.
+
             </p>
+
 
         </div>
 
 
-        <div
-            style="
-                padding:20px;
-                background:#f8f9fa;
-                text-align:center;
-            "
-        >
+        <!-- FOOTER -->
 
-            <p
-                style="
-                    color:#999999;
-                    font-size:12px;
-                    margin:0;
-                "
-            >
-                This is an automated email from
+        <div style="
+            padding:20px;
+            background:#f8f9fa;
+            text-align:center;
+        ">
+
+            <p style="
+                color:#999;
+                font-size:12px;
+                margin:0;
+            ">
+
+                Automated email from
                 E-Waste Management System.
+
             </p>
 
         </div>
+
 
     </div>
+
 
 </body>
 
@@ -486,78 +396,101 @@ Do not share this verification code with anyone.
         )
 
 
+        # --------------------------------------------------------
+        # PLAIN TEXT EMAIL
+        # --------------------------------------------------------
+
         text_body = f"""
 Welcome to E-Waste Management System!
 
 Hi {username},
 
-Your account has been successfully
-verified and activated.
+Your account has been successfully verified.
 
 You can now use the E-Waste Management System.
 
-🌱♻️
+Thank you!
 """
 
+
+        # --------------------------------------------------------
+        # HTML EMAIL
+        # --------------------------------------------------------
 
         html_body = f"""
 <!DOCTYPE html>
 
-<html lang="en">
+<html>
 
 <head>
 
     <meta charset="UTF-8">
 
-    <title>Welcome</title>
+    <title>
+        Welcome
+    </title>
 
 </head>
 
 
-<body
-    style="
-        font-family:Arial,Helvetica,sans-serif;
+<body style="
+    font-family:Arial,sans-serif;
+    background:#f4f7f5;
+    padding:30px;
+">
+
+
+    <div style="
+        max-width:600px;
+        margin:auto;
+        background:white;
         padding:30px;
-        background:#f4f7f5;
-    "
->
+        border-radius:12px;
+    ">
 
-    <div
-        style="
-            max-width:600px;
-            margin:auto;
-            background:#ffffff;
-            padding:30px;
-            border-radius:12px;
-        "
-    >
 
-        <h2>
+        <h1 style="
+            color:#28a745;
+        ">
+
             🌱 Welcome to E-Waste Management!
-        </h2>
+
+        </h1>
 
 
         <p>
-            Hi <strong>{username}</strong>,
+
+            Hi {username},
+
         </p>
 
 
         <p>
+
             Your account has been successfully
             verified and activated.
+
         </p>
 
 
         <p>
-            You can now use the E-Waste Management System.
+
+            You can now use all available
+            features of the E-Waste Management System.
+
         </p>
 
 
         <p>
-            🌱♻️ Start your eco-friendly journey!
+
+            🌱♻️ Thank you for helping manage
+            e-waste responsibly.
+
         </p>
+
 
     </div>
+
 
 </body>
 
