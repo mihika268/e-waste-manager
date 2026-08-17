@@ -17,3 +17,4 @@ requests==2.31.0
 reportlab==4.0.7
 # Email dependencies for OTP
 Flask-Mail==0.9.1
+psycopg2-binary==2.9.9
